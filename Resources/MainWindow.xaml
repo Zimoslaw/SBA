@@ -1,0 +1,83 @@
+﻿<Window x:Class="SBA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SBA"
+        mc:Ignorable="d"
+		FontSize="18" FontFamily="Segoe UI"
+        Title="Simple Backup App" Width="820" Height="550" MinWidth="800" MinHeight="400" Initialized="Window_Initialized" >
+	<Grid MinWidth="790" MinHeight="350">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="32"/>
+			<ColumnDefinition Width="10"/>
+			<ColumnDefinition Width="2*"/>
+			<ColumnDefinition Width="42"/>
+			<ColumnDefinition Width="10"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="24"/>
+			<RowDefinition Height="36"/>
+			<RowDefinition Height="44"/>
+			<RowDefinition Height="36"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="36"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="36"/>
+			<RowDefinition Height="36"/>
+			<RowDefinition Height="10"/>
+		</Grid.RowDefinitions>
+		<DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8">
+			<Menu>
+				<MenuItem Header="File">
+					<MenuItem Header="Save sources and destination" Click="SaveButton_Click"/>
+					<MenuItem Header="Settings" Click="Settings_Click"/>
+					<MenuItem Header="Exit" Click="Exit_Click"/>
+				</MenuItem>
+				<MenuItem Header="Backup">
+					<MenuItem Header="Add new directory to backup..." Click="DirButton_Click"/>
+					<MenuItem Header="Choose destination directory..." Click="DestButton_Click"/>
+					<MenuItem x:Name="backupOption" Header="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
+				</MenuItem>
+				<MenuItem Header="Help">
+					<MenuItem Header="Manual"/>
+					<MenuItem Header="About" Click="About_Click"/>
+				</MenuItem>
+			</Menu>
+		</DockPanel>
+		<Label Content="Directories to copy:" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
+		<Image Source="Images/arrow.png" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="4"/>
+		<ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="visible" HorizontalScrollBarVisibility="Visible">
+			<StackPanel x:Name="selectedDirs" Orientation="Vertical">
+				<DockPanel>
+					<Button x:Name="addDirButton" Content="Add" FontSize="16" Padding="4, 0" Margin="4" HorizontalAlignment="Right" Click="AddButton_Click"/>
+					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Margin="0,4,4,4" MinWidth="272" VerticalAlignment="Center"/>
+					<Button x:Name="dirButton" Content="..." FontSize="16" Margin="0,4,4,4" Padding="6,0" Width="28" HorizontalAlignment="left" Click="DirButton_Click"/>
+				</DockPanel>
+			</StackPanel>
+		</ScrollViewer>
+		<Label x:Name="filesCount" Grid.Column="1" Grid.Row="5" Content="" FontSize="12" />
+		<Label x:Name="filesSize" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="2" Content="" FontSize="12"/>
+		<ProgressBar x:Name="mainProgressBar" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Maximum="1" Value="-1" IsEnabled="False" Visibility="Hidden"/>
+
+		<Label Content="Backup directory:" Grid.Column="5" Grid.Row="1" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" />
+		<TextBox x:Name="destinationPath" Grid.Column="5" Grid.Row="2" Margin="0,8" FontSize="16" Text="Type path here or click on &quot;...&quot; button" TextChanged="UpdateDestinationPath"/>
+		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="0,8" Width="28" FontSize="16" Content="..." Click="DestButton_Click" />
+		<Label Content="Info:" Grid.Column="5" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Foreground="Black"/>
+		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="visible">
+			<TextBlock x:Name="appConsole" FontSize="12" TextWrapping="Wrap">
+				<TextBlock.Inlines>
+					<Label></Label>
+				</TextBlock.Inlines>
+			</TextBlock>
+		</ScrollViewer>
+
+		<Button x:Name="saveButton" Grid.Column="1" Grid.Row="8" Margin="4" Padding="8 0" HorizontalAlignment="left" Content="Save" Click="SaveButton_Click"/>
+		<Button x:Name="backupButton" Grid.Column="5" Grid.Row="8" Grid.ColumnSpan="2" Margin="4" Padding="8 0" HorizontalAlignment="Right" Content="Execute backup" Click="BackupButton_Click"/>
+
+	</Grid>
+</Window>
