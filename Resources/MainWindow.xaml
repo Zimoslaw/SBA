@@ -44,7 +44,7 @@
 					<MenuItem x:Name="backupOption" Header="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
 				</MenuItem>
 				<MenuItem Header="Help">
-					<MenuItem Header="Manual"/>
+					<Hyperlink NavigateUri="http://code.logos.com/blog/">Manual</Hyperlink>
 					<MenuItem Header="About" Click="About_Click"/>
 				</MenuItem>
 			</Menu>
@@ -77,7 +77,7 @@
 		</ScrollViewer>
 
 		<Button x:Name="saveButton" Grid.Column="1" Grid.Row="8" Margin="4" Padding="8 0" HorizontalAlignment="left" Content="Save" Click="SaveButton_Click"/>
-		<Button x:Name="backupButton" Grid.Column="5" Grid.Row="8" Grid.ColumnSpan="2" Margin="4" Padding="8 0" HorizontalAlignment="Right" Content="Execute backup" Click="BackupButton_Click"/>
+		<Button x:Name="backupButton" Grid.Column="5" Grid.Row="8" Grid.ColumnSpan="2" Margin="4" Padding="8 0" HorizontalAlignment="Right" Content="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
 
 	</Grid>
 </Window>

@@ -106,92 +106,6 @@ namespace SBA
 		}
 
 		/**
-		 * <summary>
-		 * Opens dialog for selecting a folder and puts selected path into TextBox element.
-		 * That TextBox is used for adding directory to copy. <see cref="AddButton_Click(object, RoutedEventArgs)"/>
-		 * </summary>
-		 */
-		private void DirButton_Click(object sender, RoutedEventArgs e)
-		{
-			CommonOpenFileDialog dirSelectionWindow = new CommonOpenFileDialog();
-			dirSelectionWindow.IsFolderPicker = true;
-
-			CommonFileDialogResult dirSelectionResult = dirSelectionWindow.ShowDialog();
-
-			if(dirSelectionResult == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(dirSelectionWindow.FileName))
-			{
-				directoryPath.Text = dirSelectionWindow.FileName;
-			}
-		}
-
-		/**
-		 * <summary>
-		 * Opens dialog for selecting a backup destination folder, puts it in TextBox and sets it as destination directory
-		 * </summary>
-		 */
-		private void DestButton_Click(object sender, RoutedEventArgs e)
-		{
-			CommonOpenFileDialog destSelectionWindow = new CommonOpenFileDialog();
-			destSelectionWindow.IsFolderPicker = true;
-
-			CommonFileDialogResult dirSelectionResult = destSelectionWindow.ShowDialog();
-
-			if(dirSelectionResult == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(destSelectionWindow.FileName))
-			{
-				destinationPath.Text = destSelectionWindow.FileName;
-				UpdateDestinationPath(null, null);
-			}
-		}
-
-		/**
-		 * <summary>
-		 * Adds directory in TextBox to backup list (directories to backup) and puts it on UI list <see cref="InsertPathIntoWindow(string)"/>.
-		 * Checks if direcory exists, if it is already on list and if maximum number of added directories is reached
-		 * </summary>
-		 */
-		private void AddButton_Click(object sender, RoutedEventArgs e)
-		{
-			if(pathsList.Count() < MaxSources) //count of directories cannot exceed maxSources
-			{
-				string path = directoryPath.Text;
-				if(Directory.Exists(path)) //checking if given directory even exists
-				{
-					bool dirExists = false; //bool for checking if directory is already in list
-
-					foreach(string p in pathsList) //checking if directory is already in list
-					{
-						if(p == path) //if exists
-						{
-							Logging logging = new Logging();
-							logging.Log(appConsole, "", 11);
-							MessageBox.Show("Given path is already in the list");
-							dirExists = true;
-							break;
-						}
-					}
-
-					if(!dirExists)
-					{
-						pathsList.Add(path); //adding paths to list
-						InsertPathIntoWindow(path); //instering path into UI
-					}
-				}
-				else
-				{
-					Logging logging = new Logging();
-					logging.Log(appConsole, path, 0);
-					MessageBox.Show("Given path does not exits");
-				}
-			}
-			else
-			{
-				Logging logging = new Logging();
-				logging.Log(appConsole, "", 12);
-				MessageBox.Show($"Limit of paths to copy is reached (max. {MaxSources})");
-			}
-		}
-
-		/**
 		 * <summary>Checks if destiantion path exists</summary>
 		 */
 		private bool CheckDestinationPath()
@@ -290,20 +204,67 @@ namespace SBA
 		}
 
 		/**
-		 *<summary>Saves paths into file <see cref="Config.Save(List{string}, string, TextBlock)"/></summary>
-		 * 
+		 * <summary>Updates info about size and number of all files in source directories</summary>
 		 */
-		private void SaveButton_Click(object sender, RoutedEventArgs e)
+		private void UpdateFileCountAndSize(int n, ulong s)
 		{
-			Config config = new Config();
-			Logging logging = new Logging();
-			if(config.Save(pathsList, destPath, appConsole))
+			filesCount.Content = "Number of files: " + n;
+
+			s = s >> 20; //size in MB
+			if(s > 1024)
 			{
-				logging.Log(appConsole, "", 10);
+				s = s >> 10;
+				filesSize.Content = "Est. size [GB]: " + s;
+			}
+			else
+				filesSize.Content = "Est. size [MB]: " + s;
+		}
+
+		/**
+		 * <summary>
+		 * Adds directory in TextBox to backup list (directories to backup) and puts it on UI list <see cref="InsertPathIntoWindow(string)"/>.
+		 * Checks if direcory exists, if it is already on list and if maximum number of added directories is reached
+		 * </summary>
+		 */
+		private void AddButton_Click(object sender, RoutedEventArgs e)
+		{
+			if(pathsList.Count() < MaxSources) //count of directories cannot exceed maxSources
+			{
+				string path = directoryPath.Text;
+				if(Directory.Exists(path)) //checking if given directory even exists
+				{
+					bool dirExists = false; //bool for checking if directory is already in list
+
+					foreach(string p in pathsList) //checking if directory is already in list
+					{
+						if(p == path) //if exists
+						{
+							Logging logging = new Logging();
+							logging.Log(appConsole, "", 11);
+							MessageBox.Show("Given path is already in the list");
+							dirExists = true;
+							break;
+						}
+					}
+
+					if(!dirExists)
+					{
+						pathsList.Add(path); //adding paths to list
+						InsertPathIntoWindow(path); //instering path into UI
+					}
+				}
+				else
+				{
+					Logging logging = new Logging();
+					logging.Log(appConsole, path, 0);
+					MessageBox.Show("Given path does not exits");
+				}
 			}
 			else
 			{
-				logging.Log(appConsole, "", 1);
+				Logging logging = new Logging();
+				logging.Log(appConsole, "", 12);
+				MessageBox.Show($"Limit of paths to copy is reached (max. {MaxSources})");
 			}
 		}
 
@@ -406,20 +367,59 @@ namespace SBA
 		}
 
 		/**
-		 * <summary>Updates info about size and number of all files in source directories</summary>
+		 * <summary>
+		 * Opens dialog for selecting a folder and puts selected path into TextBox element.
+		 * That TextBox is used for adding directory to copy. <see cref="AddButton_Click(object, RoutedEventArgs)"/>
+		 * </summary>
 		 */
-		private void UpdateFileCountAndSize(int n, ulong s)
+		private void DirButton_Click(object sender, RoutedEventArgs e)
 		{
-			filesCount.Content = "Number of files: " + n;
+			CommonOpenFileDialog dirSelectionWindow = new CommonOpenFileDialog();
+			dirSelectionWindow.IsFolderPicker = true;
 
-			s = s >> 20; //size in MB
-			if(s > 1024)
+			CommonFileDialogResult dirSelectionResult = dirSelectionWindow.ShowDialog();
+
+			if(dirSelectionResult == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(dirSelectionWindow.FileName))
 			{
-				s = s >> 10;
-				filesSize.Content = "Est. size [GB]: " + s;
+				directoryPath.Text = dirSelectionWindow.FileName;
+			}
+		}
+
+		/**
+		 * <summary>
+		 * Opens dialog for selecting a backup destination folder, puts it in TextBox and sets it as destination directory
+		 * </summary>
+		 */
+		private void DestButton_Click(object sender, RoutedEventArgs e)
+		{
+			CommonOpenFileDialog destSelectionWindow = new CommonOpenFileDialog();
+			destSelectionWindow.IsFolderPicker = true;
+
+			CommonFileDialogResult dirSelectionResult = destSelectionWindow.ShowDialog();
+
+			if(dirSelectionResult == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(destSelectionWindow.FileName))
+			{
+				destinationPath.Text = destSelectionWindow.FileName;
+				UpdateDestinationPath(null, null);
+			}
+		}
+
+		/**
+		 *<summary>Saves paths into file <see cref="Config.Save(List{string}, string, TextBlock)"/></summary>
+		 * 
+		 */
+		private void SaveButton_Click(object sender, RoutedEventArgs e)
+		{
+			Config config = new Config();
+			Logging logging = new Logging();
+			if(config.Save(pathsList, destPath, appConsole))
+			{
+				logging.Log(appConsole, "", 10);
 			}
 			else
-				filesSize.Content = "Est. size [MB]: " + s;
+			{
+				logging.Log(appConsole, "", 1);
+			}
 		}
 
 		/**
@@ -439,6 +439,8 @@ namespace SBA
 			AboutWindow dialog = new AboutWindow();
 			dialog.Show();
 		}
+
+
 
 		/**
 		 * <summary>Exits application</summary>
