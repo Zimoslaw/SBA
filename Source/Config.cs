@@ -13,19 +13,28 @@ namespace SBA
 	/**
 	 * <summary>Implements reading and writing app configuration from and to a file</summary>
 	 */
-	class Config
+	public class Config
 	{
+		//config file names
 		const string URLFilePath = "paths.ini";
 		const string configFilePath = "config.ini";
 
+		public static List<string> pathsList = new List<string>(); //list of paths selected to copy
+		public static string destinationPath = "Type path here or click on \"...\" button"; //selected destination path
+
+		//global settings
+		public static bool Overwrite = true; //overwrite existing files?
+		public static bool CheckHash = false; //check hash after copying file?
+		public static readonly byte MaxSources = 64; //maximum number of source directories to backup
+
+		public static bool isConfigSaved = true; //was current configuration saved?
+
 		/**
 		 * <summary>Writes paths (URLs of files to backup and backup directory) into the configuration file</summary>
-		 * <param name="paths">Directories to copy</param>
-		 * <param name="dest">Destination path (backup directory)</param>
 		 * <param name="console">TextBlock element for displaying events</param>
 		 * <returns>Bool. True if saving was successful. False if there was a problem with saving</returns>
 		 */
-		public bool Save(List<string> paths, string dest, TextBlock console)
+		public bool Save(TextBlock logConsole)
 		{
 			try
 			{
@@ -33,35 +42,35 @@ namespace SBA
 
 				pathsFile.Write($"##This file contains absolute paths of directories{Environment.NewLine}##Paths are contained between \" and \"{Environment.NewLine}#{Environment.NewLine}#{Environment.NewLine}#Destination Directory (directory where files and directories will be copied to e.g.: destination=\"D:\\Backup\")");
 
-				pathsFile.Write($"{Environment.NewLine}destination=\"{dest}\"");
+				pathsFile.Write($"{Environment.NewLine}destination=\"{destinationPath}\"");
 
-				pathsFile.Write($"{Environment.NewLine}#{Environment.NewLine}#{Environment.NewLine}#Source directories (directories that will be copied){Environment.NewLine}# - Each path has to be started with \'source=\' (e.g. source=\"C:\\Users\\User\"){Environment.NewLine}# - There can be up to {MainWindow.MaxSources} paths. Redundant paths won't be loaded");
+				pathsFile.Write($"{Environment.NewLine}#{Environment.NewLine}#{Environment.NewLine}#Source directories (directories that will be copied){Environment.NewLine}# - Each path has to be started with \'source=\' (e.g. source=\"C:\\Users\\User\"){Environment.NewLine}# - There can be up to {MaxSources} paths. Redundant paths won't be loaded");
 
-				foreach(string p in paths)
+				foreach(string p in pathsList)
 				{
 					pathsFile.Write($"{Environment.NewLine}source=\"{p}\"");
 				}
 
 				pathsFile.Close();
 
+				isConfigSaved = true;
+
 				return true;
 			}
 			catch(Exception exception)
 			{
 				Logging logging = new Logging();
-				logging.Log(console, exception.ToString(), 1);
+				logging.Log(logConsole, exception.ToString(), 1);
 				return false;
 			}
 		}
 
 		/**
 		 * <summary>Loads paths (URLs of files to backup and backup directory) from configuration file</summary>
-		 * <param name="dest">Destination path (backup directory)</param>
-		 * <param name="paths">Directories to cop</param>
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 * <returns>Bool. True if loading was successful. False if there was a problem with loading</returns>
 		 */
-		public bool Load(ref string dest, List<string> paths, TextBlock logConsole)
+		public bool Load(TextBlock logConsole)
 		{
 			try
 			{
@@ -85,7 +94,7 @@ namespace SBA
 							{
 								string p = line.Substring(line.IndexOf('"') + 1, line.LastIndexOf('"') - line.IndexOf('"') - 1);
 								if(Directory.Exists(p))
-									dest = p;
+									destinationPath = p;
 								else
 									isErrorInConfig = true;
 							}
@@ -95,7 +104,7 @@ namespace SBA
 
 								if(Directory.Exists(p))
 								{
-									paths.Add(p);
+									pathsList.Add(p);
 									sources++;
 								}
 								else
@@ -103,7 +112,7 @@ namespace SBA
 									isErrorInConfig = true;
 								}
 
-								if(sources >= MainWindow.MaxSources)
+								if(sources >= MaxSources)
 									isMaxNumberOfSourcesReached = true;
 							}
 							else
@@ -148,11 +157,9 @@ namespace SBA
 
 		/**
 		 * <summary>Writes app's configuration into file</summary>
-		 * <param name="overwrite">Overwrite an existing file setting</param>
-		 * <param name="checkHash">Compare hash of original and copied file setting</param>
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 */
-		public void SaveConfig(bool overwrite, bool checkHash, TextBlock logConsole)
+		public void SaveConfig(TextBlock logConsole)
 		{
 			try
 			{
@@ -160,12 +167,12 @@ namespace SBA
 
 				pathsFile.Write($"##This file contains settings{Environment.NewLine}##0 = No (false), 1 = Yes (true){Environment.NewLine}#{Environment.NewLine}##Overwrite if there's file with the same name in destination folder?");
 
-				char zeroOrOne = overwrite ? '1' : '0';
+				char zeroOrOne = Overwrite ? '1' : '0';
 				pathsFile.Write($"{Environment.NewLine}overwrite={zeroOrOne}");
 
 				pathsFile.Write($"{Environment.NewLine}#{Environment.NewLine}##Check hash (SHA256) values of original and copied files? (check if they're indentical)");
 
-				zeroOrOne = checkHash ? '1' : '0';
+				zeroOrOne = CheckHash ? '1' : '0';
 				pathsFile.Write($"{Environment.NewLine}hash={zeroOrOne}");
 
 				pathsFile.Close();
@@ -178,11 +185,9 @@ namespace SBA
 		}
 
 		/**<summary>Reads the app's configuration from file</summary>
-		 * <param name="overwrite">Reference to a variable for overwrite an existing file setting</param>
-		 * <param name="hash">>Reference to a variable for compare hash of original and copied file setting</param>
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 */
-		public void LoadConfig(ref bool overwrite, ref bool hash, TextBlock logConsole)
+		public void LoadConfig(TextBlock logConsole)
 		{
 			try
 			{
@@ -203,18 +208,18 @@ namespace SBA
 							if(set == '1')
 							{
 								if(line.Contains("overwrite"))
-									overwrite = true;
+									Overwrite = true;
 								else if(line.Contains("hash"))
-									hash = true;
+									CheckHash = true;
 								else
 									isErrorInConfig = true;
 							}
 							else if(set == '0')
 							{
 								if(line.Contains("overwrite"))
-									overwrite = false;
+									Overwrite = false;
 								else if(line.Contains("hash"))
-									hash = false;
+									CheckHash = false;
 								else
 									isErrorInConfig = true;
 							}

@@ -15,27 +15,26 @@ using System.Windows.Shapes;
 namespace SBA
 {
 	/// <summary>
-	/// Interaction logic for LoadingErrorDialog.xaml
+	/// Interaction logic for ExitDialog.xaml
 	/// </summary>
-	public partial class LoadingErrorDialog : Window
+	public partial class ExitDialog : Window
 	{
-		public LoadingErrorDialog()
+		public ExitDialog()
 		{
 			InitializeComponent();
 		}
 
-		private void cancelLoadButton_Click(object sender, RoutedEventArgs e)
+		private void savePaths_Click(object sender, RoutedEventArgs e)
 		{
-			DialogResult = false;
+			//save and exit
+			Config config = new Config();
+			config.Save(null);
+			Application.Current.Shutdown();
 		}
 
-		private void loadOnlyOkButton_Click(object sender, RoutedEventArgs e)
+		private void exitWithoutSaving_Click(object sender, RoutedEventArgs e)
 		{
-			DialogResult = true;
-		}
-
-		private void exitBeforeLoadButton_Click(object sender, RoutedEventArgs e)
-		{
+			//exit witout saving
 			Application.Current.Shutdown();
 		}
 	}

@@ -34,8 +34,8 @@ namespace SBA
 			InitializeComponent();
 
 			//setting checkboxes
-			overwriteCheckbox.IsChecked = MainWindow.Overwrite ? true : false;
-			hashCheckbox.IsChecked = MainWindow.CheckHash ? true : false;
+			overwriteCheckbox.IsChecked = Config.Overwrite ? true : false;
+			hashCheckbox.IsChecked = Config.CheckHash ? true : false;
 		}
 
 		/**
@@ -44,12 +44,12 @@ namespace SBA
 		private void Ok_Click(object sender, RoutedEventArgs e)
 		{
 			//applying setings
-			MainWindow.Overwrite = overwriteCheckbox.IsChecked == true ? true : false;
-			MainWindow.CheckHash = hashCheckbox.IsChecked == true ? true : false;
+			Config.Overwrite = overwriteCheckbox.IsChecked == true ? true : false;
+			Config.CheckHash = hashCheckbox.IsChecked == true ? true : false;
 
 			//saving settings
 			Config config = new Config();
-			config.SaveConfig(MainWindow.Overwrite, MainWindow.CheckHash, parent.appConsole);
+			config.SaveConfig(parent.appConsole);
 
 			DialogResult = true;
 		}

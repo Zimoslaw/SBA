@@ -68,9 +68,16 @@
     <Compile Include="Resources\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Resources\ExitDialog.xaml.cs">
+      <DependentUpon>ExitDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Resources\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="Resources\ExitDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\LoadingErrorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

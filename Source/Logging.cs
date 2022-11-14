@@ -18,7 +18,7 @@ namespace SBA
 
 		/**
 		 * <summary>Method for logging events in file (logs.txt) and displaying them in a textblock element</summary>
-		 * <param name="console">Textblock for displaying logs</param>
+		 * <param name="console">Textblock for displaying logs. If NULL, logs won't be shown in UI</param>
 		 * <param name="s">Additional information</param>
 		 * <param name="n">Error or info number. Described in Logging class</param>
 		 */
@@ -89,12 +89,15 @@ namespace SBA
 				break;
 			}
 
-			console.Text += msg;
+			msg = "[" + date + "] " + msg;
+
+			if(console != null)
+				console.Text += msg;
 
 			if(n < 10)
-				File.AppendAllText(logFilePath, $"ERROR\t{date} {msg}");
+				File.AppendAllText(logFilePath, $"ERROR\t{msg}");
 			else
-				File.AppendAllText(logFilePath, $"INFO\t{date} {msg}");
+				File.AppendAllText(logFilePath, $"INFO\t{msg}");
 		}
 	}
 }

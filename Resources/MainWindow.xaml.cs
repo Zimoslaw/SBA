@@ -39,15 +39,10 @@ namespace SBA
 {
 	public partial class MainWindow : Window
 	{
-		List<string> pathsList = new List<string>(); //list of paths selected to copy
-		string destPath = "Type path here or click on \"...\" button"; //selected destination path
 		int numberOfFiles = 0; //calculated number of files to copy
 		ulong sizeOfFiles = 0; //calculated size of files to copy
 
-		//global settings
-		public static bool Overwrite = true; //overwrite existing files?
-		public static bool CheckHash = false; //check hash after copying file?
-		public const byte MaxSources = 64; //maximum number of source directories to backup
+		Config config = new Config();
 
 		public MainWindow()
 		{
@@ -57,18 +52,17 @@ namespace SBA
 		private void Window_Initialized(object sender, EventArgs e)
 		{
 			//--------------------------------------loading settings---------------------------------------
-			Config config = new Config();
 			Logging logging = new Logging();
 
-			config.LoadConfig(ref Overwrite, ref CheckHash, appConsole);
+			config.LoadConfig(appConsole);
 
 			//-------------------------loading paths from file on application start-------------------------
-			if(config.Load(ref destPath, pathsList, appConsole))
+			if(config.Load(appConsole))
 			{
 				try
 				{
-					destinationPath.Text = destPath;
-					foreach(string path in pathsList)
+					destinationPath.Text = Config.destinationPath;
+					foreach(string path in Config.pathsList)
 					{
 						InsertPathIntoWindow(path);
 					}
@@ -90,19 +84,20 @@ namespace SBA
 
 				if(dialog.DialogResult != true) //if selected "don't load"
 				{
-					destPath = "";
-					pathsList.Clear();
+					Config.destinationPath = "";
+					Config.pathsList.Clear();
 				}
 				else //if selected "load only correct paths"
 				{
-					destinationPath.Text = destPath;
+					destinationPath.Text = Config.destinationPath;
 
-					foreach(string path in pathsList)
+					foreach(string path in Config.pathsList)
 					{
 						InsertPathIntoWindow(path);
 					}
 				}
 			}
+			addDirButton.IsEnabled = false;
 		}
 
 		/**
@@ -110,7 +105,7 @@ namespace SBA
 		 */
 		private bool CheckDestinationPath()
 		{
-			if(Directory.Exists(destPath))
+			if(Directory.Exists(Config.destinationPath))
 			{
 				return true;
 			}
@@ -128,7 +123,7 @@ namespace SBA
 		 */
 		private bool CheckSourceList()
 		{
-			foreach(string path in pathsList)
+			foreach(string path in Config.pathsList)
 			{
 				if(!Directory.Exists(path))
 				{
@@ -193,6 +188,9 @@ namespace SBA
 				}));
 			});
 			thread.Start();
+
+			Config.isConfigSaved = false;
+			addDirButton.IsEnabled = false;
 		}
 
 		/**
@@ -200,7 +198,8 @@ namespace SBA
 		 */
 		private void UpdateDestinationPath(object sender, RoutedEventArgs e)
 		{
-			destPath = destinationPath.Text;
+			Config.destinationPath = destinationPath.Text;
+			Config.isConfigSaved = false;
 		}
 
 		/**
@@ -228,14 +227,14 @@ namespace SBA
 		 */
 		private void AddButton_Click(object sender, RoutedEventArgs e)
 		{
-			if(pathsList.Count() < MaxSources) //count of directories cannot exceed maxSources
+			if(Config.pathsList.Count() < Config.MaxSources) //count of directories cannot exceed maxSources
 			{
 				string path = directoryPath.Text;
 				if(Directory.Exists(path)) //checking if given directory even exists
 				{
 					bool dirExists = false; //bool for checking if directory is already in list
 
-					foreach(string p in pathsList) //checking if directory is already in list
+					foreach(string p in Config.pathsList) //checking if directory is already in list
 					{
 						if(p == path) //if exists
 						{
@@ -249,7 +248,7 @@ namespace SBA
 
 					if(!dirExists)
 					{
-						pathsList.Add(path); //adding paths to list
+						Config.pathsList.Add(path); //adding paths to list
 						InsertPathIntoWindow(path); //instering path into UI
 					}
 				}
@@ -264,7 +263,7 @@ namespace SBA
 			{
 				Logging logging = new Logging();
 				logging.Log(appConsole, "", 12);
-				MessageBox.Show($"Limit of paths to copy is reached (max. {MaxSources})");
+				MessageBox.Show($"Limit of paths to copy is reached (max. {Config.MaxSources})");
 			}
 		}
 
@@ -275,7 +274,7 @@ namespace SBA
 		{
 			string path = ((Button)sender).Tag.ToString();
 
-			pathsList.Remove(path); //removing from list
+			Config.pathsList.Remove(path); //removing from list
 
 			//setting number and size as 'in progress'
 			filesCount.Content = "Number of files: Counting";
@@ -289,7 +288,18 @@ namespace SBA
 				backup.CountFilesAndSize(path); //counting number of files and their size in chosen directory
 
 				numberOfFiles -= backup.NumberOfFiles;
-				sizeOfFiles -= backup.SizeOfFiles;
+
+				if(numberOfFiles < 0)
+					numberOfFiles = 0;
+
+				try
+				{
+					sizeOfFiles = checked(sizeOfFiles - backup.SizeOfFiles);
+				}
+				catch(Exception exception)
+				{
+					sizeOfFiles = 0;
+				}
 
 				Dispatcher.BeginInvoke(new Action(() =>
 				{
@@ -304,11 +314,13 @@ namespace SBA
 			selectedDirs.Children.Remove(childToRemove);
 
 			//checking if there's any source paths left
-			if(pathsList.Count == 0)
+			if(Config.pathsList.Count == 0)
 			{
 				backupButton.IsEnabled = false;
 				backupOption.IsEnabled = false;
 			}
+
+			Config.isConfigSaved = false;
 		}
 
 		/**
@@ -323,7 +335,7 @@ namespace SBA
 
 			if(CheckDestinationPath()) //does destination path exists
 			{
-				if(pathsList.Count > 0) //are there any directories on list
+				if(Config.pathsList.Count > 0) //are there any directories on list
 				{
 					if(CheckSourceList()) //are source directories valid
 					{
@@ -338,7 +350,7 @@ namespace SBA
 							Thread copyThread = new Thread(
 								new ThreadStart(() =>
 								{
-									backup.BackupDirectories(pathsList, destPath);
+									backup.BackupDirectories(Config.pathsList, Config.destinationPath);
 									Dispatcher.BeginInvoke(new Action(() =>
 									{
 										mainProgressBar.Value = -1;
@@ -348,12 +360,13 @@ namespace SBA
 							);
 							backupButton.IsEnabled = false;
 							backupOption.IsEnabled = false;
+							backupButton.Content = "In progress...";
 							mainProgressBar.Visibility = Visibility.Visible;
 							copyThread.Start();
 						}
-						catch(Exception ex)
+						catch(Exception exception)
 						{
-							logging.Log(appConsole, ex.ToString(), 5);
+							logging.Log(appConsole, exception.ToString(), 5);
 						}
 					}
 				}
@@ -385,6 +398,11 @@ namespace SBA
 			}
 		}
 
+		private void directoryPath_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			addDirButton.IsEnabled = true;
+		}
+
 		/**
 		 * <summary>
 		 * Opens dialog for selecting a backup destination folder, puts it in TextBox and sets it as destination directory
@@ -412,7 +430,7 @@ namespace SBA
 		{
 			Config config = new Config();
 			Logging logging = new Logging();
-			if(config.Save(pathsList, destPath, appConsole))
+			if(config.Save(appConsole))
 			{
 				logging.Log(appConsole, "", 10);
 			}
@@ -449,5 +467,7 @@ namespace SBA
 		{
 			Application.Current.Shutdown();
 		}
+
+		
 	}
 }

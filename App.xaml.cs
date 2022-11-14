@@ -13,5 +13,15 @@ namespace SBA
 	/// </summary>
 	public partial class App : Application
 	{
+		private void Application_Exit(object sender, ExitEventArgs e)
+		{
+			Console.WriteLine("Exiting...");
+			if(!Config.isConfigSaved)
+			{
+				//show dialog is paths weren't saved to prevent configuration loss
+				ExitDialog dialog = new ExitDialog();
+				dialog.ShowDialog();
+			}
+		}
 	}
 }

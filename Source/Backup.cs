@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -10,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Windows.Threading;
 
 namespace SBA
 {
@@ -49,8 +49,8 @@ namespace SBA
 		 */
 		public Backup(TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption)
 		{
-			doOverwrite = MainWindow.Overwrite;
-			doCheckHash = MainWindow.CheckHash;
+			doOverwrite = Config.Overwrite;
+			doCheckHash = Config.CheckHash;
 			logConsole = LogConsole;
 			mainProgressBar = ProgressBar;
 			backupButton = BackupButton;
@@ -78,42 +78,48 @@ namespace SBA
 		{
 			destinationRoot = destination;
 
-			foreach(string root in rootDirs)
-			{
-				rootDirectories.Add(root);
-			}
-
-			Stopwatch stopwatch = new Stopwatch();
+			Stopwatch stopwatch = new Stopwatch(); //start counting elapsed time
 			stopwatch.Start();
 
-			foreach(string root in rootDirectories)
-			{
-				CopyFile(root.Substring(0, root.LastIndexOf('\\')), root);
+			foreach(string root in rootDirs) //get list of directories to backup
+				rootDirectories.Add(root);
 
-				//Dispatcher.BeginInvoke(new Action(() =>
-				//{
-				//	mainProgressBar.Value++;
-				//}));
-				
-			}
+			foreach(string root in rootDirectories) //start copying each dir and its subdirs
+				CopyFile(root.Substring(0, root.LastIndexOf('\\')), root);
 
 			Dispatcher.BeginInvoke(new Action(() =>
 			{
 				backupButton.IsEnabled = true;
 				backupOption.IsEnabled = true;
+				backupButton.Content = "Execute Backup";
 			}));
 
 			stopwatch.Stop();
 
+			int elapsed = stopwatch.Elapsed.Seconds;
+			string time = "seconds";
+			if(elapsed > 59)
+			{
+				int seconds = elapsed % 60;
+				elapsed /= 60;
+				time = $"minutes {seconds} seconds";
+				if(elapsed > 59)
+				{
+					int minutes = elapsed % 60;
+					elapsed /= 60;
+					time = $"hours {minutes} minutes {seconds} seconds";
+				}
+			}
+
 			Dispatcher.BeginInvoke(new Action(() =>
 			{
 				Logging logging = new Logging();
-				logging.Log(logConsole, $"{stopwatch.Elapsed.Seconds} s", 16);
+				logging.Log(logConsole, $"{elapsed} {time}", 16);
 
 				mainProgressBar.Value = mainProgressBar.Maximum;
 			}));
 			
-			MessageBox.Show($"Backup done in {stopwatch.Elapsed.Seconds} seconds");
+			MessageBox.Show($"Backup done in {elapsed} {time}");
 		}
 
 		/**
@@ -169,14 +175,6 @@ namespace SBA
 						}
 							
 					}
-					catch(UnauthorizedAccessException)
-					{
-						Dispatcher.BeginInvoke(new Action(() =>
-						{
-							Logging logging = new Logging();
-							logging.Log(logConsole, $"Access to file \"{path}\" denied. Could not copy this file.", 5);
-						}));
-					}
 					catch(Exception exception)
 					{
 						Dispatcher.BeginInvoke(new Action(() =>
@@ -206,10 +204,21 @@ namespace SBA
 					}
 				}
 			}
+			catch(UnauthorizedAccessException)
+			{
+				Dispatcher.BeginInvoke(new Action(() =>
+				{
+					Logging logging = new Logging();
+					logging.Log(logConsole, $"Access to directory or file \"{path}\" denied. Could not copy this directory/file.", 5);
+				}));
+			}
 			catch(Exception exception)
 			{
-				Logging logging = new Logging();
-				logging.Log(logConsole, exception.ToString(), 5);
+				Dispatcher.BeginInvoke(new Action(() =>
+				{
+					Logging logging = new Logging();
+					logging.Log(logConsole, exception.ToString(), 5);
+				}));
 			}
 		}
 
@@ -217,12 +226,7 @@ namespace SBA
 		 * <summary>Counts total number of files and size in bytes of all files in given directory and its subdirectories</summary>
 		 * <param name="path">URL of directory</param>
 		 */
-		public async void CountFilesAndSize(string path)
-		{
-			await CountAsync(path);
-		}
-
-		private async Task CountAsync(string path)
+		public void CountFilesAndSize(string path)
 		{
 			try
 			{
@@ -235,13 +239,24 @@ namespace SBA
 				}
 				foreach(string dir in Directory.GetDirectories(path))
 				{
-					await CountAsync(dir);
+					CountFilesAndSize(dir);
 				}
+			}
+			catch(UnauthorizedAccessException)
+			{
+				Dispatcher.BeginInvoke(new Action(() =>
+				{
+					Logging logging = new Logging();
+					logging.Log(logConsole, $" access to directory: \"{path}\" denied", 7);
+				}));
 			}
 			catch(Exception e)
 			{
-				Logging logging = new Logging();
-				logging.Log(logConsole, $" in directory \"{path}\": " + e.ToString(), 7);
+				Dispatcher.BeginInvoke(new Action(() =>
+				{
+					Logging logging = new Logging();
+					logging.Log(logConsole, $" in directory \"{path}\": " + e.ToString(), 7);
+				}));
 			}
 		}
 

@@ -51,12 +51,12 @@
 		</DockPanel>
 		<Label Content="Directories to copy:" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top"/>
 		<Image Source="Images/arrow.png" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="4"/>
-		<ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="visible" HorizontalScrollBarVisibility="Visible">
+		<ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
 			<StackPanel x:Name="selectedDirs" Orientation="Vertical">
 				<DockPanel>
 					<Button x:Name="addDirButton" Content="Add" FontSize="16" Padding="4, 0" Margin="4" HorizontalAlignment="Right" Click="AddButton_Click"/>
-					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Margin="0,4,4,4" MinWidth="272" VerticalAlignment="Center"/>
 					<Button x:Name="dirButton" Content="..." FontSize="16" Margin="0,4,4,4" Padding="6,0" Width="28" HorizontalAlignment="left" Click="DirButton_Click"/>
+					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Margin="0,4,4,4" MinWidth="272" VerticalAlignment="Center" TextChanged="directoryPath_TextChanged"/>
 				</DockPanel>
 			</StackPanel>
 		</ScrollViewer>
@@ -68,11 +68,9 @@
 		<TextBox x:Name="destinationPath" Grid.Column="5" Grid.Row="2" Margin="0,8" FontSize="16" Text="Type path here or click on &quot;...&quot; button" TextChanged="UpdateDestinationPath"/>
 		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="0,8" Width="28" FontSize="16" Content="..." Click="DestButton_Click" />
 		<Label Content="Info:" Grid.Column="5" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Foreground="Black"/>
-		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="visible">
-			<TextBlock x:Name="appConsole" FontSize="12" TextWrapping="Wrap">
-				<TextBlock.Inlines>
-					<Label></Label>
-				</TextBlock.Inlines>
+		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+			<TextBlock x:Name="appConsole" FontSize="12">
+				
 			</TextBlock>
 		</ScrollViewer>
 
