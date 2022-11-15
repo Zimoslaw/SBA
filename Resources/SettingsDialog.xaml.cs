@@ -25,7 +25,7 @@ namespace SBA
 	/// </summary>
 	public partial class SettingsDialog : Window
 	{
-		private MainWindow parent;
+		private readonly MainWindow parent;
 
 		public SettingsDialog(MainWindow Parent)
 		{
@@ -34,8 +34,8 @@ namespace SBA
 			InitializeComponent();
 
 			//setting checkboxes
-			overwriteCheckbox.IsChecked = Config.Overwrite ? true : false;
-			hashCheckbox.IsChecked = Config.CheckHash ? true : false;
+			overwriteCheckbox.IsChecked = Config.Overwrite;
+			hashCheckbox.IsChecked = Config.CheckHash;
 		}
 
 		/**
@@ -44,8 +44,8 @@ namespace SBA
 		private void Ok_Click(object sender, RoutedEventArgs e)
 		{
 			//applying setings
-			Config.Overwrite = overwriteCheckbox.IsChecked == true ? true : false;
-			Config.CheckHash = hashCheckbox.IsChecked == true ? true : false;
+			Config.Overwrite = overwriteCheckbox.IsChecked == true;
+			Config.CheckHash = hashCheckbox.IsChecked == true;
 
 			//saving settings
 			Config config = new Config();

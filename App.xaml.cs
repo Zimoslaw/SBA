@@ -21,6 +21,7 @@ namespace SBA
 				//show dialog is paths weren't saved to prevent configuration loss
 				ExitDialog dialog = new ExitDialog();
 				dialog.ShowDialog();
+				Current.Shutdown();
 			}
 		}
 	}

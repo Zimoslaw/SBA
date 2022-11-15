@@ -25,6 +25,7 @@ namespace SBA
 		private List<string> rootDirectories;
 		private bool doOverwrite;
 		private bool doCheckHash;
+		private MainWindow mainWindow;
 		private TextBlock logConsole;
 		private ProgressBar mainProgressBar;
 		private Button backupButton;
@@ -47,10 +48,11 @@ namespace SBA
 		 * <param name="ProgressBar">ProgressBar object for displaying backup progress</param>
 		 * <param name="BackupButton">Button that starts backup process</param>
 		 */
-		public Backup(TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption)
+		public Backup(MainWindow MainWindow, TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption)
 		{
 			doOverwrite = Config.Overwrite;
 			doCheckHash = Config.CheckHash;
+			mainWindow = MainWindow;
 			logConsole = LogConsole;
 			mainProgressBar = ProgressBar;
 			backupButton = BackupButton;
@@ -78,9 +80,6 @@ namespace SBA
 		{
 			destinationRoot = destination;
 
-			Stopwatch stopwatch = new Stopwatch(); //start counting elapsed time
-			stopwatch.Start();
-
 			foreach(string root in rootDirs) //get list of directories to backup
 				rootDirectories.Add(root);
 
@@ -89,37 +88,12 @@ namespace SBA
 
 			Dispatcher.BeginInvoke(new Action(() =>
 			{
+				mainProgressBar.Value = mainProgressBar.Maximum;
 				backupButton.IsEnabled = true;
 				backupOption.IsEnabled = true;
 				backupButton.Content = "Execute Backup";
+				mainWindow.StopTimeCount();
 			}));
-
-			stopwatch.Stop();
-
-			int elapsed = stopwatch.Elapsed.Seconds;
-			string time = "seconds";
-			if(elapsed > 59)
-			{
-				int seconds = elapsed % 60;
-				elapsed /= 60;
-				time = $"minutes {seconds} seconds";
-				if(elapsed > 59)
-				{
-					int minutes = elapsed % 60;
-					elapsed /= 60;
-					time = $"hours {minutes} minutes {seconds} seconds";
-				}
-			}
-
-			Dispatcher.BeginInvoke(new Action(() =>
-			{
-				Logging logging = new Logging();
-				logging.Log(logConsole, $"{elapsed} {time}", 16);
-
-				mainProgressBar.Value = mainProgressBar.Maximum;
-			}));
-			
-			MessageBox.Show($"Backup done in {elapsed} {time}");
 		}
 
 		/**
@@ -174,6 +148,14 @@ namespace SBA
 								File.Copy(path, path.Replace(root, destinationRoot), false); //Copying file (without replacing)
 						}
 							
+					}
+					catch(UnauthorizedAccessException)
+					{
+						Dispatcher.BeginInvoke(new Action(() =>
+						{
+							Logging logging = new Logging();
+							logging.Log(logConsole, $"Access to file \"{path}\" denied. Could not copy this file.", 5);
+						}));
 					}
 					catch(Exception exception)
 					{
@@ -295,7 +277,7 @@ namespace SBA
 					Dispatcher.BeginInvoke(new Action(() =>
 					{
 						Logging logging = new Logging();
-						logging.Log(logConsole, $" of \"{file1.FullName}\" and \"{file2.FullName}\": {e.ToString()}", 5);
+						logging.Log(logConsole, $" of \"{file1.FullName}\" and \"{file2.FullName}\": {e}", 5);
 					}));
 					return false;
 				}

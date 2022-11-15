@@ -34,6 +34,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SBA
 {
@@ -42,7 +43,9 @@ namespace SBA
 		int numberOfFiles = 0; //calculated number of files to copy
 		ulong sizeOfFiles = 0; //calculated size of files to copy
 
-		Config config = new Config();
+		readonly Config config = new Config(); //configuration
+
+		readonly Stopwatch stopwatch = new Stopwatch(); //stopwatch for backup time counting
 
 		public MainWindow()
 		{
@@ -209,10 +212,10 @@ namespace SBA
 		{
 			filesCount.Content = "Number of files: " + n;
 
-			s = s >> 20; //size in MB
+			s >>= 20; //size in MB
 			if(s > 1024)
 			{
-				s = s >> 10;
+				s >>= 10;
 				filesSize.Content = "Est. size [GB]: " + s;
 			}
 			else
@@ -299,6 +302,8 @@ namespace SBA
 				catch(Exception exception)
 				{
 					sizeOfFiles = 0;
+					Logging logging = new Logging();
+					logging.Log(null, exception.ToString(), 7);
 				}
 
 				Dispatcher.BeginInvoke(new Action(() =>
@@ -343,9 +348,11 @@ namespace SBA
 
 						mainProgressBar.Maximum = numberOfFiles;
 
+						stopwatch.Restart(); //start counting elapsed time
+
 						try
 						{
-							Backup backup = new Backup(appConsole, mainProgressBar, backupButton, backupOption);
+							Backup backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
 
 							Thread copyThread = new Thread(
 								new ThreadStart(() =>
@@ -380,6 +387,34 @@ namespace SBA
 		}
 
 		/**
+		 * <summary>Stops the backup timer started at the begining of backup process</summary>
+		 */
+		public void StopTimeCount()
+		{
+			stopwatch.Stop();
+
+			int elapsed = stopwatch.Elapsed.Seconds;
+			string time = "seconds";
+			if(elapsed > 59)
+			{
+				int seconds = elapsed % 60;
+				elapsed /= 60;
+				time = $"minutes {seconds} seconds";
+				if(elapsed > 59)
+				{
+					int minutes = elapsed % 60;
+					elapsed /= 60;
+					time = $"hours {minutes} minutes {seconds} seconds";
+				}
+			}
+
+			Logging logging = new Logging();
+			logging.Log(appConsole, $"{elapsed} {time}", 16);
+			
+			MessageBox.Show($"Backup done in {elapsed} {time}");
+		}
+
+		/**
 		 * <summary>
 		 * Opens dialog for selecting a folder and puts selected path into TextBox element.
 		 * That TextBox is used for adding directory to copy. <see cref="AddButton_Click(object, RoutedEventArgs)"/>
@@ -387,8 +422,10 @@ namespace SBA
 		 */
 		private void DirButton_Click(object sender, RoutedEventArgs e)
 		{
-			CommonOpenFileDialog dirSelectionWindow = new CommonOpenFileDialog();
-			dirSelectionWindow.IsFolderPicker = true;
+			CommonOpenFileDialog dirSelectionWindow = new CommonOpenFileDialog()
+			{
+				IsFolderPicker = true
+			};
 
 			CommonFileDialogResult dirSelectionResult = dirSelectionWindow.ShowDialog();
 
@@ -410,8 +447,10 @@ namespace SBA
 		 */
 		private void DestButton_Click(object sender, RoutedEventArgs e)
 		{
-			CommonOpenFileDialog destSelectionWindow = new CommonOpenFileDialog();
-			destSelectionWindow.IsFolderPicker = true;
+			CommonOpenFileDialog destSelectionWindow = new CommonOpenFileDialog
+			{
+				IsFolderPicker = true
+			};
 
 			CommonFileDialogResult dirSelectionResult = destSelectionWindow.ShowDialog();
 
@@ -465,9 +504,14 @@ namespace SBA
 		 */
 		private void Exit_Click(object sender, RoutedEventArgs e)
 		{
-			Application.Current.Shutdown();
+			if(!Config.isConfigSaved)
+			{
+				//show dialog is paths weren't saved to prevent configuration loss
+				ExitDialog dialog = new ExitDialog();
+				dialog.ShowDialog();
+			}
+			else
+				Application.Current.Shutdown();
 		}
-
-		
 	}
 }

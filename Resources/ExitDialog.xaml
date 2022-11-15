@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SBA"
         mc:Ignorable="d"
-		
 		FontSize="16" FontFamily="Segoe UI"
-        Title="Paths not saved" MinHeight="150" MinWidth="300" Height="150" Width="300">
+        Title="Paths not saved" MinHeight="150" MinWidth="300" Height="150" Width="300" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="10"/>
