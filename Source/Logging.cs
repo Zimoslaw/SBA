@@ -76,7 +76,7 @@ namespace SBA
 					msg = $"Loading configuration was successful{Environment.NewLine}";
 				break;
 				case 16: //Loading configuration successful
-					msg = $"Backup successful. Elapsed time: {s}{Environment.NewLine}";
+					msg = $"Backup done. Elapsed time: {s}{Environment.NewLine}";
 				break;
 				case 17: //Loading configuration successful
 					msg = $"Backup process started...{Environment.NewLine}";

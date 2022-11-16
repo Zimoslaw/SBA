@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SBA"
         mc:Ignorable="d"
 		FontSize="16" FontFamily="Segoe UI"
-        Title="Paths not saved" MinHeight="150" MinWidth="300" Height="150" Width="300" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner">
+        Title="Paths not saved" MinHeight="150" MinWidth="320" Height="150" Width="320" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterOwner">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="10"/>
@@ -22,6 +22,6 @@
 		</Grid.RowDefinitions>
 		<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Text="You haven't saved your paths. Are you sure you want to exit the application?" TextWrapping="Wrap" HorizontalAlignment="Left" TextAlignment="Center"/>
 		<Button x:Name="savePaths" Grid.Column="1" Grid.Row="2" Margin="20, 4" Padding="4, 0" FontSize="12" Height="32" IsDefault="True" Content="Save and exit" Click="savePaths_Click" />
-		<Button x:Name="exitWithoutSaving" Grid.Column="2" Grid.Row="2" Margin="10, 4" Padding="4, 0" FontSize="12" Height="32" Content="Exit without saving" Click="exitWithoutSaving_Click" />
+		<Button x:Name="exitWithoutSaving" Grid.Column="2" Grid.Row="2" Margin="8,4" Padding="4, 0" FontSize="12" Height="32" Content="Exit without saving" Click="exitWithoutSaving_Click" Width="Auto" />
 	</Grid>
 </Window>

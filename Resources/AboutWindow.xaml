@@ -22,7 +22,7 @@
 		<StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Center">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 				<Label Content="Simple Backup Application"/>
-				<Label Content="v0.92 (11.2022)" FontWeight="Bold"/>
+				<Label Content="v0.9.3 (11.2022)" FontWeight="Bold"/>
 			</StackPanel>
 			<Label HorizontalAlignment="Center" Content="author: Jakub Niewiarowski"/>
 			<TextBlock TextAlignment="Center" TextWrapping="Wrap" Padding="5">This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions (see license.txt)</TextBlock>

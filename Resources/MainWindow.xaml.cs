@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Controls;
@@ -32,9 +31,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading;
-using System.Diagnostics;
 
 namespace SBA
 {
@@ -45,7 +42,7 @@ namespace SBA
 
 		readonly Config config = new Config(); //configuration
 
-		readonly Stopwatch stopwatch = new Stopwatch(); //stopwatch for backup time counting
+		long stopwatch; //timestamp for backup time counting
 
 		public MainWindow()
 		{
@@ -348,7 +345,8 @@ namespace SBA
 
 						mainProgressBar.Maximum = numberOfFiles;
 
-						stopwatch.Restart(); //start counting elapsed time
+						DateTimeOffset now = DateTime.Now; //save timestamp for counting elapsed time
+						stopwatch = now.ToUnixTimeSeconds();
 
 						try
 						{
@@ -368,7 +366,9 @@ namespace SBA
 							backupButton.IsEnabled = false;
 							backupOption.IsEnabled = false;
 							backupButton.Content = "In progress...";
+							progress.Text = "0%";
 							mainProgressBar.Visibility = Visibility.Visible;
+							progress.Visibility = Visibility.Visible;
 							copyThread.Start();
 						}
 						catch(Exception exception)
@@ -387,31 +387,61 @@ namespace SBA
 		}
 
 		/**
-		 * <summary>Stops the backup timer started at the begining of backup process</summary>
+		 * <summary>Signalises that backup process is done and updates UI</summary>
 		 */
 		public void StopTimeCount()
 		{
-			stopwatch.Stop();
-
-			int elapsed = stopwatch.Elapsed.Seconds;
-			string time = "seconds";
-			if(elapsed > 59)
-			{
-				int seconds = elapsed % 60;
-				elapsed /= 60;
-				time = $"minutes {seconds} seconds";
-				if(elapsed > 59)
-				{
-					int minutes = elapsed % 60;
-					elapsed /= 60;
-					time = $"hours {minutes} minutes {seconds} seconds";
-				}
-			}
+			DateTimeOffset now = DateTime.Now;
+			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
 
 			Logging logging = new Logging();
-			logging.Log(appConsole, $"{elapsed} {time}", 16);
-			
-			MessageBox.Show($"Backup done in {elapsed} {time}");
+			logging.Log(appConsole, $"{time}", 16);
+
+			mainProgressBar.Value = mainProgressBar.Maximum;
+			progress.Text = "Done";
+			backupButton.Content = "Execute Backup";
+			backupButton.IsEnabled = true;
+			backupOption.IsEnabled = true;
+			elapsedTime.Content = "";
+
+			MessageBox.Show($"Backup done in {time}");
+		}
+
+		/**
+		 * <summary>Updates progress bar and progress text</summary>
+		 */
+		public void UpdateProgress()
+		{
+			backupButton.IsEnabled = false;
+			backupOption.IsEnabled = false;
+
+			mainProgressBar.Value++;
+			progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum)*100, 1)}%";
+
+			DateTimeOffset now = DateTime.Now;
+			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
+			elapsedTime.Content = $"Elapsed: {time}";
+		}
+
+		/**
+		 * <summary>Converts seconds to hours, minutes and seconds</summary>
+		 */
+		private string SecondsToTime(long secs)
+		{
+			string time = $"{secs} seconds";
+			if(secs > 59)
+			{
+				long seconds = secs % 60;
+				secs /= 60;
+				time = $"{secs} minutes {seconds} seconds";
+				if(secs > 59)
+				{
+					long minutes = secs % 60;
+					secs /= 60;
+					time = $"{secs} hours {minutes} minutes {seconds} seconds";
+				}
+			}
+			return time;
 		}
 
 		/**

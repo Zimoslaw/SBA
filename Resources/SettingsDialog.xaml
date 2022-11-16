@@ -17,7 +17,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="10"/>
 			<RowDefinition Height="*"/>
-			<RowDefinition Height="36"/>
+			<RowDefinition Height="40"/>
 			<RowDefinition Height="10"/>
 		</Grid.RowDefinitions>
 
@@ -29,7 +29,7 @@
 				<CheckBox x:Name="hashCheckbox" Margin="5" VerticalAlignment="Center" Content="Compare hash (SHA256) of original and copied file"/>
 			</StackPanel>
 		</StackPanel>
-		<Button Grid.Column="1" Grid.Row="2" Padding="8, 0" Content="Cancel" Margin="4" Click="Cancel_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-		<Button Grid.Column="2" Grid.Row="2" Padding="8, 0" Content="OK" Margin="4" Click="Ok_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+		<Button Grid.Column="1" Grid.Row="2" Padding="8, 0" Content="Cancel" Margin="4" Click="Cancel_Click" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+		<Button Grid.Column="2" Grid.Row="2" Padding="8, 0" Content="OK" Margin="4" Click="Ok_Click" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 	</Grid>
 </Window>

@@ -88,10 +88,6 @@ namespace SBA
 
 			Dispatcher.BeginInvoke(new Action(() =>
 			{
-				mainProgressBar.Value = mainProgressBar.Maximum;
-				backupButton.IsEnabled = true;
-				backupOption.IsEnabled = true;
-				backupButton.Content = "Execute Backup";
 				mainWindow.StopTimeCount();
 			}));
 		}
@@ -168,7 +164,7 @@ namespace SBA
 
 					Dispatcher.BeginInvoke(new Action(() =>
 					{
-						mainProgressBar.Value++;
+						mainWindow.UpdateProgress();
 					}));
 				}
 				else //if path doesn't point to a file, it's consider as directory
