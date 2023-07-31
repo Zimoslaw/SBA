@@ -1,5 +1,5 @@
 ﻿/*	Simple Backup Application
- *   Copyright (C) 2022 Jakub Niewiarowski
+ *   Copyright (C) 2023 Jakub Niewiarowski
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace SBA
 {
 	public partial class MainWindow : Window
 	{
-		int numberOfFiles = 0; //calculated number of files to copy
+		long numberOfFiles = 0; //calculated number of files to copy
 		ulong sizeOfFiles = 0; //calculated size of files to copy
 
 		readonly Config config = new Config(); //configuration
@@ -171,14 +171,14 @@ namespace SBA
 			backupOption.IsEnabled = false;
 
 			//adding number of files and their size
-			Backup backup = new Backup(appConsole);
+			FileOps counter = new FileOps(appConsole);
 
 			Thread thread = new Thread(() =>
 			{
-				backup.CountFilesAndSize(path);
+                counter.CountFilesAndSize(path);
 
-				numberOfFiles += backup.NumberOfFiles;
-				sizeOfFiles += backup.SizeOfFiles;
+				numberOfFiles += counter.NumberOfFiles;
+				sizeOfFiles += counter.SizeOfFiles;
 
 				Dispatcher.BeginInvoke(new Action(() =>
 				{
@@ -205,7 +205,7 @@ namespace SBA
 		/**
 		 * <summary>Updates info about size and number of all files in source directories</summary>
 		 */
-		private void UpdateFileCountAndSize(int n, ulong s)
+		private void UpdateFileCountAndSize(long n, ulong s)
 		{
 			filesCount.Content = "Number of files: " + n;
 
@@ -281,20 +281,20 @@ namespace SBA
 			filesSize.Content = "Est. size: Counting";
 
 			//subtraction of file count and size
-			Backup backup = new Backup(appConsole);
+			FileOps counter = new FileOps(appConsole);
 
 			Thread thread = new Thread(() =>
 			{
-				backup.CountFilesAndSize(path); //counting number of files and their size in chosen directory
+				counter.CountFilesAndSize(path); //counting number of files and their size in chosen directory
 
-				numberOfFiles -= backup.NumberOfFiles;
+				numberOfFiles -= counter.NumberOfFiles;
 
 				if(numberOfFiles < 0)
 					numberOfFiles = 0;
 
 				try
 				{
-					sizeOfFiles = checked(sizeOfFiles - backup.SizeOfFiles);
+					sizeOfFiles = checked(sizeOfFiles - counter.SizeOfFiles);
 				}
 				catch(Exception exception)
 				{

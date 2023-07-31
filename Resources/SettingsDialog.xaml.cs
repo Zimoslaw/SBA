@@ -1,5 +1,5 @@
 ﻿/*	Simple Backup Application
- *   Copyright (C) 2022 Jakub Niewiarowski
+ *   Copyright (C) 2023 Jakub Niewiarowski
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ using System.Windows.Controls;
 
 namespace SBA
 {
-	/// <summary>
-	/// Interaction logic for SettingsDialog.xaml
-	/// </summary>
-	public partial class SettingsDialog : Window
+    /** 
+     * <summary> Interaction logic for SettingsDialog.xaml </summary>
+	**/
+    public partial class SettingsDialog : Window
 	{
 		private readonly MainWindow parent;
 

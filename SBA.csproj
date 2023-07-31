@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.WindowsAPICodePack-Core.1.1.0.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -95,6 +98,7 @@
     <Compile Include="Resources\LoadingErrorDialog.xaml.cs">
       <DependentUpon>LoadingErrorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Source\FileOps.cs" />
     <Compile Include="Source\Logging.cs" />
     <Compile Include="Resources\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -138,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

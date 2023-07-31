@@ -1,14 +1,24 @@
-﻿using System;
+﻿/*	Simple Backup Application
+ *   Copyright (C) 2023 Jakub Niewiarowski
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Diagnostics;
-using System.Security.Cryptography;
 using System.Windows.Threading;
 
 namespace SBA
@@ -19,28 +29,16 @@ namespace SBA
 	 * Also counting files and overall size and comparing SHA256 hash of original file and a copy.
 	 * </summary>
 	 */
-	public class Backup : DependencyObject
+	internal class Backup : FileOps
 	{
 		private string destinationRoot;
 		private List<string> rootDirectories;
 		private bool doOverwrite;
 		private bool doCheckHash;
 		private MainWindow mainWindow;
-		private TextBlock logConsole;
 		private ProgressBar mainProgressBar;
 		private Button backupButton;
 		private MenuItem backupOption;
-
-		private int numberOfFiles;
-		public int NumberOfFiles
-		{
-			get { return numberOfFiles; }
-		}
-		private ulong sizeOfFiles;
-		public ulong SizeOfFiles
-		{
-			get { return sizeOfFiles; }
-		}
 
 		/**
 		 * <summary>Constructs Backup object</summary>
@@ -48,23 +46,15 @@ namespace SBA
 		 * <param name="ProgressBar">ProgressBar object for displaying backup progress</param>
 		 * <param name="BackupButton">Button that starts backup process</param>
 		 */
-		public Backup(MainWindow MainWindow, TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption)
+		public Backup(MainWindow MainWindow, TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption) : base(LogConsole)
 		{
 			doOverwrite = Config.Overwrite;
 			doCheckHash = Config.CheckHash;
 			mainWindow = MainWindow;
-			logConsole = LogConsole;
 			mainProgressBar = ProgressBar;
 			backupButton = BackupButton;
 			backupOption = BackupOption;
 			rootDirectories = new List<string>();
-		}
-
-		public Backup(TextBlock LogConsole)
-		{
-			numberOfFiles = 0;
-			sizeOfFiles = 0;
-			logConsole = LogConsole;
 		}
 
 		/**
@@ -197,86 +187,6 @@ namespace SBA
 					Logging logging = new Logging();
 					logging.Log(logConsole, exception.ToString(), 5);
 				}));
-			}
-		}
-
-		/**
-		 * <summary>Counts total number of files and size in bytes of all files in given directory and its subdirectories</summary>
-		 * <param name="path">URL of directory</param>
-		 */
-		public void CountFilesAndSize(string path)
-		{
-			try
-			{
-				DirectoryInfo directory = new DirectoryInfo(path);
-
-				foreach(FileInfo file in directory.GetFiles())
-				{
-					numberOfFiles++;
-					sizeOfFiles += (ulong)file.Length;
-				}
-				foreach(string dir in Directory.GetDirectories(path))
-				{
-					CountFilesAndSize(dir);
-				}
-			}
-			catch(UnauthorizedAccessException)
-			{
-				Dispatcher.BeginInvoke(new Action(() =>
-				{
-					Logging logging = new Logging();
-					logging.Log(logConsole, $" access to directory: \"{path}\" denied", 7);
-				}));
-			}
-			catch(Exception e)
-			{
-				Dispatcher.BeginInvoke(new Action(() =>
-				{
-					Logging logging = new Logging();
-					logging.Log(logConsole, $" in directory \"{path}\": " + e.ToString(), 7);
-				}));
-			}
-		}
-
-		/**
-		 * <summary>Compares SHA256 hash of two files</summary>
-		 * <param name="file1">First file to compare</param>
-		 * <param name="file2">Second file to compare</param>
-		 * <returns>Bool. True if files have identical hashes</returns>
-		 */
-		private bool CompareFilesHash(FileInfo file1, FileInfo file2)
-		{
-			using(SHA256 crypto = SHA256.Create())
-			{
-				try
-				{
-					//opening original file and getting its hash array
-					FileStream fileStream = file1.Open(FileMode.Open);
-					fileStream.Position = 0;
-					byte[] hashValue1 = crypto.ComputeHash(fileStream);
-					fileStream.Close();
-
-					//openign destination file and getting its hash array
-					fileStream = file2.Open(FileMode.Open);
-					fileStream.Position = 0;
-					byte[] hashValue2 = crypto.ComputeHash(fileStream);
-					fileStream.Close();
-
-					//comparing hash arrays
-					if(hashValue1.SequenceEqual(hashValue2))
-						return true;
-					else
-						return false;
-				}
-				catch(Exception e)
-				{
-					Dispatcher.BeginInvoke(new Action(() =>
-					{
-						Logging logging = new Logging();
-						logging.Log(logConsole, $" of \"{file1.FullName}\" and \"{file2.FullName}\": {e}", 5);
-					}));
-					return false;
-				}
 			}
 		}
 	}
