@@ -29,17 +29,17 @@ namespace SBA
 			InitializeComponent();
 		}
 
-		private void cancelLoadButton_Click(object sender, RoutedEventArgs e)
+		private void CancelLoadButton_Click(object sender, RoutedEventArgs e)
 		{
 			DialogResult = false;
 		}
 
-		private void loadOnlyOkButton_Click(object sender, RoutedEventArgs e)
+		private void LoadOnlyOkButton_Click(object sender, RoutedEventArgs e)
 		{
 			DialogResult = true;
 		}
 
-		private void exitBeforeLoadButton_Click(object sender, RoutedEventArgs e)
+		private void ExitBeforeLoadButton_Click(object sender, RoutedEventArgs e)
 		{
 			Application.Current.Shutdown();
 		}

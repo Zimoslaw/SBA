@@ -1,4 +1,4 @@
-# SBA (Simple Backup App)
+# EZ Backapp
 ## Program for creating backup of your files (for Windows)
 Simple .NET WPF project in C# for practicing purposes. Program lets you choose folders to copy and destination folder. Folder's URLs can be saved and then they're loaded on program startup. Program lets you choose if you want to overwrite existing files. There is option to compare hashes of original and copied files. Overwriting and hash checking are settings and they're saved and are loaded on program startup. Program has logging feature - logs every event into a file (**logs.txt**). Events are also displayed in info TextBlock.
 

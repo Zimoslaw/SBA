@@ -24,8 +24,8 @@
 			<RowDefinition Height="10"/>
 		</Grid.RowDefinitions>
 		<TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Text="Content in the configuration file is incorrect or some of the paths do not exist. What do you want to do?" TextWrapping="Wrap"/>
-		<Button x:Name="cancelLoadButton" Grid.Column="1" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" IsCancel="True" Content="Do not load the configuration" Click="cancelLoadButton_Click" />
-		<Button x:Name="loadOnlyOkButton" Grid.Column="2" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" IsDefault="True" Content="Load only correct" Click="loadOnlyOkButton_Click" />
-		<Button x:Name="exitBeforeLoadButton" Grid.Column="3" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" Content="Exit program" Click="exitBeforeLoadButton_Click" />
+		<Button x:Name="cancelLoadButton" Grid.Column="1" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" IsCancel="True" Content="Do not load the configuration" Click="CancelLoadButton_Click" />
+		<Button x:Name="loadOnlyOkButton" Grid.Column="2" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" IsDefault="True" Content="Load only correct" Click="LoadOnlyOkButton_Click" />
+		<Button x:Name="exitBeforeLoadButton" Grid.Column="3" Grid.Row="2" Margin="4" Padding="4, 0" FontSize="12" Height="32" Content="Exit program" Click="ExitBeforeLoadButton_Click" />
 	</Grid>
 </Window>

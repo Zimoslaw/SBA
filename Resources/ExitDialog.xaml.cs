@@ -29,7 +29,7 @@ namespace SBA
 			InitializeComponent();
 		}
 
-		private void savePaths_Click(object sender, RoutedEventArgs e)
+		private void SavePaths_Click(object sender, RoutedEventArgs e)
 		{
 			//save and exit
 			Config config = new Config();
@@ -37,7 +37,7 @@ namespace SBA
 			Application.Current.Shutdown();
 		}
 
-		private void exitWithoutSaving_Click(object sender, RoutedEventArgs e)
+		private void ExitWithoutSaving_Click(object sender, RoutedEventArgs e)
 		{
 			//exit witout saving
 			Application.Current.Shutdown();
