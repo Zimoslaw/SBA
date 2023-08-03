@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:SBA"
         mc:Ignorable="d"
 		FontSize="18" FontFamily="Segoe UI"
-        Title="EZ Backapp" Width="820" Height="550" MinWidth="800" MinHeight="400" Initialized="Window_Initialized" >
-	<Grid MinWidth="790" MinHeight="350">
+        Title="EZ Backapp" Width="840" Height="550" MinWidth="800" MinHeight="400" Initialized="Window_Initialized" >
+	<Grid MinWidth="790" MinHeight="350" Background="#FFFAFAFA">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="10"/>
 			<ColumnDefinition Width="*"/>
@@ -44,7 +44,7 @@
 					<MenuItem x:Name="backupOption" Header="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
 				</MenuItem>
 				<MenuItem Header="Help">
-					<Hyperlink NavigateUri="http://code.logos.com/blog/">Manual</Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/Zimoslaw/SBA">Manual</Hyperlink>
 					<MenuItem Header="About" Click="About_Click"/>
 				</MenuItem>
 			</Menu>
@@ -54,9 +54,9 @@
 		<ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
 			<StackPanel x:Name="selectedDirs" Orientation="Vertical">
 				<DockPanel>
-					<Button x:Name="addDirButton" Content="Add" FontSize="16" Margin="4" HorizontalAlignment="Center" Click="AddButton_Click"/>
+                    <Button x:Name="addDirButton" Content="Add" FontSize="16" Margin="0,4,4,4" HorizontalAlignment="Center" Click="AddButton_Click"/>
 					<Button x:Name="dirButton" Content="..." FontSize="16" Margin="0,4,4,4" HorizontalAlignment="Center" Click="DirButton_Click"/>
-					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Margin="0,4,4,4" VerticalAlignment="Center" TextChanged="DirectoryPath_TextChanged"/>
+					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Height="28" VerticalAlignment="Center" TextChanged="DirectoryPath_TextChanged"/>
 				</DockPanel>
 			</StackPanel>
 		</ScrollViewer>
@@ -67,7 +67,7 @@
 		<TextBlock x:Name="progress" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Text="0%" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
 
 		<Label Content="Backup directory:" Grid.Column="5" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" />
-		<TextBox x:Name="destinationPath" Grid.Column="5" Grid.Row="2" Margin="0,8" FontSize="16" Text="Type path here or click on &quot;...&quot; button" TextChanged="UpdateDestinationPath"/>
+		<TextBox x:Name="destinationPath" Grid.Column="5" Grid.Row="2" Margin="0,9,4,7" FontSize="16" Text="Type path here or click on &quot;...&quot; button" TextChanged="UpdateDestinationPath"/>
 		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="4,7,8,7" FontSize="16" Content="..." Click="DestButton_Click" />
 		<Label Content="Info:" Grid.Column="5" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Foreground="Black"/>
 		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">

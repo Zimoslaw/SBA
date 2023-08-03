@@ -5,13 +5,21 @@
              StartupUri="Resources/MainWindow.xaml"
 			 Exit="Application_Exit">
     <Application.Resources>
+
+        <Color x:Key="Primary">#00AEEF</Color>
+        <Color x:Key="PrimaryDark">#008BBF</Color>
+        <Color x:Key="Secondary">#2B3990</Color>
+        
 		<Style TargetType="Button">
+            
 			<Setter Property="Padding" Value="6"/>
+            
 			<Setter Property="Background">
 				<Setter.Value>
 					<SolidColorBrush Color="#00AEEF"/>
 				</Setter.Value>
 			</Setter>
+            
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="Button">
@@ -21,22 +29,8 @@
 									<ContentPresenter x:Name="buttonText" Margin="10, 4" HorizontalAlignment="Center" Content="{TemplateBinding Content}" TextBlock.Foreground="Black" VerticalAlignment="Center"/>
 								</DockPanel>
 						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Setter Property="Rectangle.Fill" TargetName="buttonBackground">
-									<Setter.Value>
-										<SolidColorBrush Color="#008BBF"/>
-									</Setter.Value>
-								</Setter>
-							</Trigger>
-							<Trigger Property="IsFocused" Value="True">
-								<Setter Property="Rectangle.Fill" TargetName="buttonBackground">
-									<Setter.Value>
-										<SolidColorBrush Color="#2B3990"/>
-									</Setter.Value>
-								</Setter>
-							</Trigger>
-							<Trigger Property="IsEnabled" Value="False">
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
 								<Setter Property="Rectangle.Fill" TargetName="buttonBackground">
 									<Setter.Value>
 										<SolidColorBrush Color="#ddd"/>
@@ -52,6 +46,56 @@
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
-		</Style>
+            
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource PrimaryDark}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource Primary}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.Click">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource Secondary}" Duration="0:0:0.2" AutoReverse="True" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.LostFocus">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource Primary}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
