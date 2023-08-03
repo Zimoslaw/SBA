@@ -1,4 +1,4 @@
-﻿/*	Simple Backup Application
+﻿/*	EZ Backapp
  *   Copyright (C) 2023 Jakub Niewiarowski
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -15,23 +15,14 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SBA
 {
@@ -41,6 +32,7 @@ namespace SBA
 		ulong sizeOfFiles = 0; //calculated size of files to copy
 
 		readonly Config config = new Config(); //configuration
+		readonly Logging logging = new Logging(); //logging
 
 		long stopwatch; //timestamp for backup time counting
 
@@ -52,7 +44,6 @@ namespace SBA
 		private void Window_Initialized(object sender, EventArgs e)
 		{
 			//--------------------------------------loading settings---------------------------------------
-			Logging logging = new Logging();
 
 			config.LoadConfig(appConsole);
 
@@ -111,7 +102,6 @@ namespace SBA
 			}
 			else
 			{
-				Logging logging = new Logging();
 				logging.Log(appConsole, destinationPath.Text, 0);
 				MessageBox.Show("Destination path does not exist");
 				return false;
@@ -127,7 +117,6 @@ namespace SBA
 			{
 				if(!Directory.Exists(path))
 				{
-					Logging logging = new Logging();
 					logging.Log(appConsole, path, 0);
 					MessageBox.Show("Given path does not exits");
 				}
@@ -238,7 +227,6 @@ namespace SBA
 					{
 						if(p == path) //if exists
 						{
-							Logging logging = new Logging();
 							logging.Log(appConsole, "", 11);
 							MessageBox.Show("Given path is already in the list");
 							dirExists = true;
@@ -254,14 +242,12 @@ namespace SBA
 				}
 				else
 				{
-					Logging logging = new Logging();
 					logging.Log(appConsole, path, 0);
 					MessageBox.Show("Given path does not exits");
 				}
 			}
 			else
 			{
-				Logging logging = new Logging();
 				logging.Log(appConsole, "", 12);
 				MessageBox.Show($"Limit of paths to copy is reached (max. {Config.MaxSources})");
 			}
@@ -333,7 +319,6 @@ namespace SBA
 		 */
 		private void BackupButton_Click(object sender, RoutedEventArgs e)
 		{
-			Logging logging = new Logging();
 
 			if(CheckDestinationPath()) //does destination path exists
 			{
@@ -394,7 +379,6 @@ namespace SBA
 			DateTimeOffset now = DateTime.Now;
 			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
 
-			Logging logging = new Logging();
 			logging.Log(appConsole, $"{time}", 16);
 
 			mainProgressBar.Value = mainProgressBar.Maximum;
@@ -465,7 +449,7 @@ namespace SBA
 			}
 		}
 
-		private void directoryPath_TextChanged(object sender, TextChangedEventArgs e)
+		private void DirectoryPath_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			addDirButton.IsEnabled = true;
 		}
@@ -498,7 +482,6 @@ namespace SBA
 		private void SaveButton_Click(object sender, RoutedEventArgs e)
 		{
 			Config config = new Config();
-			Logging logging = new Logging();
 			if(config.Save(appConsole))
 			{
 				logging.Log(appConsole, "", 10);

@@ -1,4 +1,4 @@
-﻿/*	Simple Backup Application
+﻿/*	EZ Backapp
  *   Copyright (C) 2023 Jakub Niewiarowski
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Windows;
-using System.Windows.Controls;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SBA
 {

@@ -1,4 +1,4 @@
-﻿/*	Simple Backup Application
+﻿/*	EZ Backapp
  *   Copyright (C) 2023 Jakub Niewiarowski
  *
  *   This program is free software: you can redistribute it and/or modify
