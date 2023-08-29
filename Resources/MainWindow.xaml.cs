@@ -23,6 +23,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Xml;
 
 namespace SBA
 {
@@ -133,8 +135,10 @@ namespace SBA
 			Button removeButton = new Button(); //button for removing each directory from backup
 			TextBlock selectedDirectory = new TextBlock(); //textblock for displaying each of selected directiories to backup
 
-			//initializing template of buttons for removing directories from backup 
-			removeButton.Margin = new Thickness(4, 4, 4, 4);
+            //initializing template of buttons for removing directories from backup 
+            Style style = Application.Current.FindResource("DeleteButton") as Style; //get style od DeleteButton
+            removeButton.Style = style;
+            removeButton.Margin = new Thickness(4, 4, 4, 4);
 			removeButton.HorizontalAlignment = HorizontalAlignment.Right;
 			removeButton.FontSize = 16;
 			removeButton.Content = "Delete";

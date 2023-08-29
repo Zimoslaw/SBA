@@ -6,9 +6,12 @@
 			 Exit="Application_Exit">
     <Application.Resources>
 
-        <Color x:Key="Primary">#00AEEF</Color>
-        <Color x:Key="PrimaryDark">#008BBF</Color>
-        <Color x:Key="Secondary">#2B3990</Color>
+        <Color x:Key="Primary">#007ACD</Color>
+        <Color x:Key="PrimaryDark">#00599A</Color>
+        <Color x:Key="Secondary">#114889</Color>
+        <Color x:Key="PrimaryRed">#CE3333</Color>
+        <Color x:Key="PrimaryRedDark">#AE3333</Color>
+        <Color x:Key="SecondaryRed">#6A3333</Color>
         
 		<Style TargetType="Button">
             
@@ -16,7 +19,7 @@
             
 			<Setter Property="Background">
 				<Setter.Value>
-					<SolidColorBrush Color="#00AEEF"/>
+                    <SolidColorBrush Color="{StaticResource Primary}"/>
 				</Setter.Value>
 			</Setter>
             
@@ -26,7 +29,7 @@
 						<Grid Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
 							<Rectangle x:Name="buttonBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="{TemplateBinding Background}" RadiusX="0" RadiusY="0"/>
 								<DockPanel>
-									<ContentPresenter x:Name="buttonText" Margin="10, 4" HorizontalAlignment="Center" Content="{TemplateBinding Content}" TextBlock.Foreground="Black" VerticalAlignment="Center"/>
+									<ContentPresenter x:Name="buttonText" Margin="10, 4" HorizontalAlignment="Center" Content="{TemplateBinding Content}" TextBlock.Foreground="White" VerticalAlignment="Center"/>
 								</DockPanel>
 						</Grid>
                         <ControlTemplate.Triggers>
@@ -78,7 +81,7 @@
                             <Storyboard>
                                 <ColorAnimation
                                   Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
-                                  To="{StaticResource Secondary}" Duration="0:0:0.2" AutoReverse="True" />
+                                  To="{StaticResource Secondary}" Duration="0:0:0.1" AutoReverse="True" />
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger.Actions>
@@ -97,5 +100,94 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="DeleteButton" TargetType="Button">
+
+            <Setter Property="Padding" Value="6"/>
+
+            <Setter Property="Background">
+                <Setter.Value>
+                    <SolidColorBrush Color="{StaticResource PrimaryRed}"/>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
+                            <Rectangle x:Name="buttonBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="{TemplateBinding Background}" RadiusX="0" RadiusY="0"/>
+                            <DockPanel>
+                                <ContentPresenter x:Name="buttonText" Margin="10, 4" HorizontalAlignment="Center" Content="{TemplateBinding Content}" TextBlock.Foreground="White" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Rectangle.Fill" TargetName="buttonBackground">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="#ddd"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextBlock.Foreground" TargetName="buttonText">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="#888"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource PrimaryRedDark}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource PrimaryRed}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.Click">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource SecondaryRed}" Duration="0:0:0.1" AutoReverse="True" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Button.LostFocus">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                  Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                  To="{StaticResource PrimaryRed}" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
     </Application.Resources>
 </Application>
