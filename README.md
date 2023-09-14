@@ -22,13 +22,17 @@ There are two settings:
 
 Settings are aplied and saved if you click **"Ok"**
 
-Settings are saved in **config.ini** file
+Settings are saved in **config.ini** file. Setting are stored in memory after startup, so changes in file at runtime are not affecting the program.
 
 ### Backup
 To backup your files, you have to choose destination directory. You can do it by clicking **"..."** button in "Backup directory" section or by clicking **Backup -> Choose destination directory...**
+
 You also have to choose folders to backup. You select folder by clicking **"..."** button in "Directories to copy:" section or **Backup -> Add new directory to backup...**
+
 After selecting you have to add that folder to the list by clicking "Add" button. You can add up to **64** folders to backup.
 Start backup by clicking **"Backup" button**. Progress bar will inform you about progress, and message will be displayed after backup is done. If there were some errors in the proccess, they are displayed in Info section
+
+You can cancel the backup after start by clicking **"Cancel" button**. Single file copying process is not interrupted, so there will be no corrupted files after cancelation.
 
 ### Saving your folders
 You can save chosen folders by clicking **"Save" button** or **File -> Save sources and destination**
