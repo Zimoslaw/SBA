@@ -68,8 +68,11 @@ namespace SBA
 				case 7: //Error while counting files 
 					msg = $"Error while counting files{s}{Environment.NewLine}";
 				break;
-				//-------------------------------infos---------------------------
-				case 10: //Saving paths OK
+                case 8: //Error while counting files 
+                    msg = $"Backup canceled{Environment.NewLine}";
+                break;
+                //-------------------------------infos---------------------------
+                case 10: //Saving paths OK
 					msg = $"Saving paths was successful{Environment.NewLine}";
 				break;
 				case 11: //Selected path already in list

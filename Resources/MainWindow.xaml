@@ -78,10 +78,8 @@
 
         <Button x:Name="saveButton" Grid.Column="1" Grid.Row="8" Margin="4" HorizontalAlignment="Left" Content="Save" Click="SaveButton_Click" Width="Auto"/>
         <DockPanel Grid.Column="5" Grid.Row="8" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-            <Button x:Name="cancelButton" Style="{DynamicResource DeleteButton}" Margin="4" Content="Cancel" Visibility="Hidden"/>
+            <Button x:Name="cancelButton" Style="{DynamicResource DeleteButton}" Margin="4" Content="Cancel" Visibility="Hidden" Click="CancelButton_Click"/>
             <Button x:Name="backupButton" Margin="4" Content="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
         </DockPanel>
-
-
     </Grid>
 </Window>

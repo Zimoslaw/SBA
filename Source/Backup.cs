@@ -35,6 +35,7 @@ namespace SBA
 		private List<string> rootDirectories;
 		private bool doOverwrite;
 		private bool doCheckHash;
+		private bool cancel = false;
 		private MainWindow mainWindow;
 		private ProgressBar mainProgressBar;
 		private Button backupButton;
@@ -78,7 +79,7 @@ namespace SBA
 
 			Dispatcher.BeginInvoke(new Action(() =>
 			{
-				mainWindow.StopTimeCount();
+				mainWindow.StopTimeCount(cancel);
 			}));
 		}
 
@@ -92,7 +93,10 @@ namespace SBA
 		 */
 		private void CopyFile(string root, string path)
 		{
-			try
+            if (cancel) //If cancelation button was pressed, stop copying
+                return;
+
+            try
 			{
 				if(File.Exists(path))
 				{
@@ -101,6 +105,7 @@ namespace SBA
 						if(doOverwrite)
 						{
 							File.Copy(path, path.Replace(root, destinationRoot), true); //Copying file (with replacing)
+
 							if(doCheckHash) //compare SHA256 hashes if user wants
 							{
 								//compare hashes for first time
@@ -188,6 +193,11 @@ namespace SBA
 					logging.Log(logConsole, exception.ToString(), 5);
 				}));
 			}
+		}
+
+		public void CancelBackup()
+		{
+			cancel = true;
 		}
 	}
 }

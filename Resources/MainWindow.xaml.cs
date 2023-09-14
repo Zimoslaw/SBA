@@ -35,8 +35,9 @@ namespace SBA
 
 		readonly Config config = new Config(); //configuration
 		readonly Logging logging = new Logging(); //logging
+		private Backup backup = null; //backup operations
 
-		long stopwatch; //timestamp for backup time counting
+        long stopwatch; //timestamp for backup time counting
 
 		public MainWindow()
 		{
@@ -91,7 +92,11 @@ namespace SBA
 				}
 			}
 			addDirButton.IsEnabled = false;
-		}
+
+			//--------------------Creating Backup object----------------------------
+			//backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
+
+        }
 
 		/**
 		 * <summary>Checks if destiantion path exists</summary>
@@ -330,7 +335,9 @@ namespace SBA
 				{
 					if(CheckSourceList()) //are source directories valid
 					{
-						logging.Log(appConsole, "", 17);
+                        backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
+
+                        logging.Log(appConsole, "", 17);
 
 						mainProgressBar.Maximum = numberOfFiles;
 
@@ -339,8 +346,6 @@ namespace SBA
 
 						try
 						{
-							Backup backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
-
 							Thread copyThread = new Thread(
 								new ThreadStart(() =>
 								{
@@ -354,10 +359,13 @@ namespace SBA
 							);
 							backupButton.IsEnabled = false;
 							backupOption.IsEnabled = false;
+							cancelButton.IsEnabled = true;
 							backupButton.Content = "In progress...";
+							cancelButton.Content = "Cancel";
 							progress.Text = "0%";
 							mainProgressBar.Visibility = Visibility.Visible;
 							progress.Visibility = Visibility.Visible;
+							cancelButton.Visibility = Visibility.Visible;
 							copyThread.Start();
 						}
 						catch(Exception exception)
@@ -377,22 +385,36 @@ namespace SBA
 
 		/**
 		 * <summary>Signalises that backup process is done and updates UI</summary>
+		 * <param name="wasCanceled">Was copying canceled or backup finished normally</param>
 		 */
-		public void StopTimeCount()
+		public void StopTimeCount(bool wasCanceled)
 		{
 			DateTimeOffset now = DateTime.Now;
 			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
+            string message = wasCanceled ? $"Backup cancelled at {progress.Text}" : $"Backup done in {time}";
 
-			logging.Log(appConsole, $"{time}", 16);
+			if(wasCanceled)
+			{
+                logging.Log(appConsole, "", 8);
+                progress.Text = "Canceled";
+            }
+			else
+			{
+                logging.Log(appConsole, $"{time}", 16);
+                mainProgressBar.Value = mainProgressBar.Maximum;
+                progress.Text = "Done";
+            }
 
-			mainProgressBar.Value = mainProgressBar.Maximum;
-			progress.Text = "Done";
 			backupButton.Content = "Execute Backup";
 			backupButton.IsEnabled = true;
 			backupOption.IsEnabled = true;
-			elapsedTime.Content = "";
+            cancelButton.IsEnabled = false;
+            cancelButton.Visibility = Visibility.Hidden;
+            elapsedTime.Content = "";
 
-			MessageBox.Show($"Backup done in {time}");
+			backup = null;
+
+            MessageBox.Show(message);
 		}
 
 		/**
@@ -433,12 +455,24 @@ namespace SBA
 		}
 
 		/**
+		 * <summary>Cancels copying operation</summary>
+		 */
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+			if (backup == null)
+				return;
+			backup.CancelBackup();
+			cancelButton.IsEnabled = false;
+			cancelButton.Content= "Canceling...";
+        }
+
+        /**
 		 * <summary>
 		 * Opens dialog for selecting a folder and puts selected path into TextBox element.
 		 * That TextBox is used for adding directory to copy. <see cref="AddButton_Click(object, RoutedEventArgs)"/>
 		 * </summary>
 		 */
-		private void DirButton_Click(object sender, RoutedEventArgs e)
+        private void DirButton_Click(object sender, RoutedEventArgs e)
 		{
 			CommonOpenFileDialog dirSelectionWindow = new CommonOpenFileDialog()
 			{
@@ -530,5 +564,7 @@ namespace SBA
 			else
 				Application.Current.Shutdown();
 		}
-	}
+
+        
+    }
 }
