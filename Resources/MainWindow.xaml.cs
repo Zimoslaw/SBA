@@ -18,6 +18,7 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -143,7 +144,7 @@ namespace SBA
             //initializing template of buttons for removing directories from backup 
             Style style = Application.Current.FindResource("DeleteButton") as Style; //get style od DeleteButton
             removeButton.Style = style;
-            removeButton.Margin = new Thickness(4, 4, 4, 4);
+            removeButton.Margin = new Thickness(0, 4, 4, 4);
 			removeButton.HorizontalAlignment = HorizontalAlignment.Right;
 			removeButton.FontSize = 16;
 			removeButton.Content = "Delete";
@@ -565,6 +566,13 @@ namespace SBA
 				Application.Current.Shutdown();
 		}
 
-        
+        private void Manual_Click(object sender, RoutedEventArgs e)
+        {
+			ProcessStartInfo manualProcess = new ProcessStartInfo();
+			manualProcess.FileName = "https://github.com/Zimoslaw/SBA";
+            manualProcess.UseShellExecute = true;
+
+			Process.Start(manualProcess);
+        }
     }
 }

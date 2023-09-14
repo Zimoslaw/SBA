@@ -43,9 +43,9 @@
 					<MenuItem Header="Choose destination directory..." Click="DestButton_Click"/>
 					<MenuItem x:Name="backupOption" Header="Execute backup" Click="BackupButton_Click" IsEnabled="False"/>
 				</MenuItem>
-				<MenuItem Header="Help">
-                    <Hyperlink NavigateUri="https://github.com/Zimoslaw/SBA">Manual</Hyperlink>
-					<MenuItem Header="About" Click="About_Click"/>
+                <MenuItem Header="Help">
+                    <MenuItem Header="Manual" Click="Manual_Click" Icon="{DynamicResource GlobeIcon}"/>
+                    <MenuItem Header="About" Click="About_Click"/>
 				</MenuItem>
 			</Menu>
 		</DockPanel>
@@ -68,7 +68,7 @@
 
 		<Label Content="Backup directory:" Grid.Column="5" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" />
 		<TextBox x:Name="destinationPath" Grid.Column="5" Grid.Row="2" Margin="0,9,4,7" FontSize="16" Text="Type path here or click on &quot;...&quot; button" TextChanged="UpdateDestinationPath"/>
-		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="4,7,8,7" FontSize="16" Content="..." Click="DestButton_Click" />
+		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="4,8,8,6" FontSize="16" Content="..." Click="DestButton_Click" />
 		<Label Content="Info:" Grid.Column="5" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Foreground="Black"/>
 		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
 			<TextBlock x:Name="appConsole" FontSize="12">

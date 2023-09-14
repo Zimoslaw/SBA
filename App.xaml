@@ -12,10 +12,12 @@
         <Color x:Key="PrimaryRed">#CE3333</Color>
         <Color x:Key="PrimaryRedDark">#AE3333</Color>
         <Color x:Key="SecondaryRed">#6A3333</Color>
+
+        <Image x:Key="GlobeIcon" Source="/Resources/globe.png" />
         
-		<Style TargetType="Button">
+        <Style TargetType="Button">
             
-			<Setter Property="Padding" Value="6"/>
+            <Setter Property="Padding" Value="6"/>
             
 			<Setter Property="Background">
 				<Setter.Value>
