@@ -48,7 +48,7 @@ namespace SBA
 		 * <param name="console">TextBlock element for displaying events</param>
 		 * <returns>Bool. True if saving was successful. False if there was a problem with saving</returns>
 		 */
-		public bool Save(TextBlock logConsole)
+		public bool Save(StackPanel logConsole)
 		{
 			try
 			{
@@ -84,7 +84,7 @@ namespace SBA
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 * <returns>Bool. True if loading was successful. False if there was a problem with loading</returns>
 		 */
-		public bool Load(TextBlock logConsole)
+		public bool Load(StackPanel logConsole)
 		{
 			try
 			{
@@ -173,7 +173,7 @@ namespace SBA
 		 * <summary>Writes app's configuration into file</summary>
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 */
-		public void SaveConfig(TextBlock logConsole)
+		public void SaveConfig(StackPanel logConsole)
 		{
 			try
 			{
@@ -201,7 +201,7 @@ namespace SBA
 		/**<summary>Reads the app's configuration from file</summary>
 		 * <param name="logConsole">TextBlock element for displaying events</param>
 		 */
-		public void LoadConfig(TextBlock logConsole)
+		public void LoadConfig(StackPanel logConsole)
 		{
 			try
 			{

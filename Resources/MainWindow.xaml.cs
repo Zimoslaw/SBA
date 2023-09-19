@@ -209,10 +209,16 @@ namespace SBA
 			filesCount.Content = "Number of files: " + n;
 
 			s >>= 20; //size in MB
-			if(s > 1024)
+			if(s > 1023)
 			{
 				s >>= 10;
 				filesSize.Content = "Est. size [GB]: " + s;
+
+				if(s > 1023)
+				{
+					s >>= 10;
+                    filesSize.Content = "Est. size [TB]: " + s;
+                }
 			}
 			else
 				filesSize.Content = "Est. size [MB]: " + s;
@@ -247,7 +253,9 @@ namespace SBA
 					if(!dirExists)
 					{
 						Config.pathsList.Add(path); //adding paths to list
-						InsertPathIntoWindow(path); //instering path into UI
+						directoryPath.Text = "Type path here or click on \"...\" button";
+
+                        InsertPathIntoWindow(path); //instering path into UI
 					}
 				}
 				else
@@ -336,7 +344,7 @@ namespace SBA
 				{
 					if(CheckSourceList()) //are source directories valid
 					{
-                        backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
+                        backup = new Backup(this, appConsole);
 
                         logging.Log(appConsole, "", 17);
 
@@ -485,7 +493,8 @@ namespace SBA
 			if(dirSelectionResult == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(dirSelectionWindow.FileName))
 			{
 				directoryPath.Text = dirSelectionWindow.FileName;
-			}
+                addDirButton.IsEnabled = true;
+            }
 		}
 
 		private void DirectoryPath_TextChanged(object sender, TextChangedEventArgs e)
@@ -568,11 +577,13 @@ namespace SBA
 
         private void Manual_Click(object sender, RoutedEventArgs e)
         {
-			ProcessStartInfo manualProcess = new ProcessStartInfo();
-			manualProcess.FileName = "https://github.com/Zimoslaw/SBA";
-            manualProcess.UseShellExecute = true;
+            ProcessStartInfo manualProcess = new ProcessStartInfo
+            {
+                FileName = "https://github.com/Zimoslaw/SBA",
+                UseShellExecute = true
+            };
 
-			Process.Start(manualProcess);
+            Process.Start(manualProcess);
         }
     }
 }

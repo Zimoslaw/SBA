@@ -12,6 +12,7 @@
         <Color x:Key="PrimaryRed">#CE3333</Color>
         <Color x:Key="PrimaryRedDark">#AE3333</Color>
         <Color x:Key="SecondaryRed">#6A3333</Color>
+        <Color x:Key="LogGray">#444444</Color>
 
         <Image x:Key="GlobeIcon" Source="/Resources/globe.png" />
         

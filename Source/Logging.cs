@@ -17,24 +17,27 @@
 
 using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace SBA
 {
 	/**
-	 * <summary>Implements logging to a file and console (TextBlock element)</summary>
+	 * <summary>Implements logging to a file and console (StackPanel)</summary>
 	 */
 	public class Logging
 	{
 		const string logFilePath = "logs.txt";
 
-		/**
+        /**
 		 * <summary>Method for logging events in file (logs.txt) and displaying them in a textblock element</summary>
 		 * <param name="console">Textblock for displaying logs. If NULL, logs won't be shown in UI</param>
 		 * <param name="s">Additional information</param>
 		 * <param name="n">Error or info number. Described in Logging class</param>
 		 */
-		public void Log(TextBlock console, string s, int n)
+        public void Log(StackPanel console, string s, int n)
 		{
 
 			string date = DateTime.Today.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
@@ -45,71 +48,102 @@ namespace SBA
 			{
 				//--------------------------------errors-------------------------
 				case 0: //path doesn't exist
-					msg = $"Given path does not exist: {s}{Environment.NewLine}";
+					msg = $"Given path does not exist: {s}";
 				break;
 				case 1: //Error saving paths
-					msg = $"Error when saving paths: {s}{Environment.NewLine}";
+					msg = $"Error when saving paths: {s}";
 				break;
 				case 2: //Error loading paths
-					msg = $"Error when loading paths: {s}{Environment.NewLine}";
+					msg = $"Error when loading paths: {s}";
 				break;
 				case 3: //Error saving config
-					msg = $"Error when saving configuration: {s}{Environment.NewLine}";
+					msg = $"Error when saving configuration: {s}";
 				break;
 				case 4: //Error loading config
-					msg = $"Error when loading configuration: {s}{Environment.NewLine}";
+					msg = $"Error when loading configuration: {s}";
 				break;
 				case 5: //Error in backup process
-					msg = $"Error when copying files: {s}{Environment.NewLine}";
+					msg = $"Error when copying files: {s}";
 				break;
 				case 6: //Error in comparing hashes
-					msg = $"Error while comparing hashes{s}{Environment.NewLine}";
+					msg = $"Error while comparing hashes{s}";
 				break;
 				case 7: //Error while counting files 
-					msg = $"Error while counting files{s}{Environment.NewLine}";
+					msg = $"Error while counting files{s}";
 				break;
                 case 8: //Error while counting files 
-                    msg = $"Backup canceled{Environment.NewLine}";
+                    msg = $"Backup canceled";
                 break;
                 //-------------------------------infos---------------------------
                 case 10: //Saving paths OK
-					msg = $"Saving paths was successful{Environment.NewLine}";
+					msg = $"Saving paths was successful";
 				break;
 				case 11: //Selected path already in list
-					msg = $"Given path is already in list{Environment.NewLine}";
+					msg = $"Given path is already in list";
 					break;
 				case 12: //Limit of selected paths has been reached
-					msg = $"Limit of paths to copy is reached{Environment.NewLine}";
+					msg = $"Limit of paths to copy is reached";
 				break;
 				case 13: //Loading paths successful
-					msg = $"Loading paths was successful{Environment.NewLine}";	
+					msg = $"Loading paths was successful";	
 				break;
 				case 14: //saving configuration successful
-					msg = $"Saving configuration was successful{Environment.NewLine}";
+					msg = $"Saving configuration was successful";
 				break;
 				case 15: //Loading configuration successful
-					msg = $"Loading configuration was successful{Environment.NewLine}";
+					msg = $"Loading configuration was successful";
 				break;
 				case 16: //Loading configuration successful
-					msg = $"Backup done. Elapsed time: {s}{Environment.NewLine}";
+					msg = $"Backup done. Elapsed time: {s}";
 				break;
 				case 17: //Loading configuration successful
-					msg = $"Backup process started...{Environment.NewLine}";
+					msg = $"Backup process started...";
 				break;
 				case 18: //Loading configuration successful
-					msg = $"Destination directory set to: {s}{Environment.NewLine}";
+					msg = $"Destination directory set to: {s}";
 				break;
 				default:
-					msg = $"Unknown error{Environment.NewLine}";
+					msg = $"Unknown error";
 				break;
 			}
 
-			msg = "[" + date + "] " + msg;
+            //Insert message into console
+            DockPanel logLine = new DockPanel
+            {
+                Margin = new Thickness(0, 0, 0, 4)
+            };
 
-			if(console != null)
-				console.Text += msg;
+            Label timeLabel = new Label
+            {
+                FontSize = 12,
+                Margin = new Thickness(0, 0, 0, 0),
+                Padding = new Thickness(0, 0, 0, 0),
+                Foreground = new SolidColorBrush(Colors.Gray),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Content = date
+			};
 
-			if(n < 10)
+			Label logLabel = new Label
+			{
+				FontSize = 12,
+				Margin = new Thickness(4, 0, 0, 0),
+				Padding = new Thickness(0, 0, 0, 0),
+				HorizontalAlignment = HorizontalAlignment.Left,
+                Content = msg
+			};
+
+			if (n < 10)
+				logLabel.Foreground = new SolidColorBrush(Colors.Crimson);
+
+			logLine.Children.Add(timeLabel);
+			logLine.Children.Add(logLabel);
+
+            console?.Children.Insert(console.Children.Count, logLine);
+
+            //Insert message with date into log file
+            msg = "[" + date + "] " + msg + Environment.NewLine;
+
+            if (n < 10)
 				File.AppendAllText(logFilePath, $"ERROR\t{msg}");
 			else
 				File.AppendAllText(logFilePath, $"INFO\t{msg}");

@@ -51,17 +51,17 @@
 		</DockPanel>
 		<Label Content="Directories to copy:" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Top"/>
 		<Image Source="Images/arrow.png" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="4"/>
-		<ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-			<StackPanel x:Name="selectedDirs" Orientation="Vertical">
-				<DockPanel>
+        <ScrollViewer Grid.Column="1" Grid.Row="2" Grid.RowSpan="3" Grid.ColumnSpan="3" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <StackPanel x:Name="selectedDirs" Orientation="Vertical">
+                <DockPanel>
                     <Button x:Name="addDirButton" Content="Add" FontSize="16" Margin="0,4,4,4" HorizontalAlignment="Center" Click="AddButton_Click"/>
-					<Button x:Name="dirButton" Content="..." FontSize="16" Margin="0,4,4,4" HorizontalAlignment="Center" Click="DirButton_Click"/>
-					<TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Height="28" VerticalAlignment="Center" TextChanged="DirectoryPath_TextChanged"/>
-				</DockPanel>
-			</StackPanel>
-		</ScrollViewer>
-		<Label x:Name="filesCount" Grid.Column="1" Grid.Row="5" Content="" FontSize="12" />
-		<Label x:Name="filesSize" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="2" Content="" FontSize="12"/>
+                    <Button x:Name="dirButton" Content="..." FontSize="16" Margin="0,4,4,4" HorizontalAlignment="Center" Click="DirButton_Click"/>
+                    <TextBox x:Name="directoryPath" Text="Type path here or click on &quot;...&quot; button" FontSize="16" Height="28" VerticalAlignment="Center" TextChanged="DirectoryPath_TextChanged"/>
+                </DockPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <Label x:Name="filesCount" Grid.Column="1" Grid.Row="5" Content="" FontSize="12" />
+        <Label x:Name="filesSize" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="2" Content="" FontSize="12"/>
 		<Label x:Name="elapsedTime" Grid.Column="5" Grid.Row="5" Content="" FontSize="12"/>
 		<ProgressBar x:Name="mainProgressBar" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Maximum="1" Value="-1" IsEnabled="False" Visibility="Hidden"/>
 		<TextBlock x:Name="progress" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Text="0%" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
@@ -71,9 +71,9 @@
 		<Button x:Name="destButton" Grid.Column="6" Grid.Row="2" Padding="6,0" Margin="4,8,8,6" FontSize="16" Content="..." Click="DestButton_Click" />
 		<Label Content="Info:" Grid.Column="5" Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Foreground="Black"/>
 		<ScrollViewer Grid.Column="5" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-			<TextBlock x:Name="appConsole" FontSize="12">
+            <StackPanel x:Name="appConsole" Orientation="Vertical">
 				
-			</TextBlock>
+			</StackPanel>
 		</ScrollViewer>
 
         <Button x:Name="saveButton" Grid.Column="1" Grid.Row="8" Margin="4" HorizontalAlignment="Left" Content="Save" Click="SaveButton_Click" Width="Auto"/>

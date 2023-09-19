@@ -37,9 +37,6 @@ namespace SBA
 		private bool doCheckHash;
 		private bool cancel = false;
 		private MainWindow mainWindow;
-		private ProgressBar mainProgressBar;
-		private Button backupButton;
-		private MenuItem backupOption;
 
 		/**
 		 * <summary>Constructs Backup object</summary>
@@ -47,14 +44,11 @@ namespace SBA
 		 * <param name="ProgressBar">ProgressBar object for displaying backup progress</param>
 		 * <param name="BackupButton">Button that starts backup process</param>
 		 */
-		public Backup(MainWindow MainWindow, TextBlock LogConsole, ProgressBar ProgressBar, Button BackupButton, MenuItem BackupOption) : base(LogConsole)
+		public Backup(MainWindow MainWindow, StackPanel LogConsole) : base(LogConsole)
 		{
 			doOverwrite = Config.Overwrite;
 			doCheckHash = Config.CheckHash;
 			mainWindow = MainWindow;
-			mainProgressBar = ProgressBar;
-			backupButton = BackupButton;
-			backupOption = BackupOption;
 			rootDirectories = new List<string>();
 		}
 

@@ -32,7 +32,7 @@ namespace SBA
      */
     internal class FileOps : DependencyObject
     {
-        internal TextBlock logConsole;
+        internal StackPanel logConsole;
 
         private int numberOfFiles;
         internal int NumberOfFiles
@@ -45,7 +45,7 @@ namespace SBA
             get { return sizeOfFiles; }
         }
 
-        internal FileOps(TextBlock LogConsole)
+        internal FileOps(StackPanel LogConsole)
         {
             numberOfFiles = 0;
             sizeOfFiles = 0;
