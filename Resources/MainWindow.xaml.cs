@@ -432,9 +432,6 @@ namespace SBA
 		 */
         public void UpdateProgressBar()
         {
-            backupButton.IsEnabled = false;
-            backupOption.IsEnabled = false;
-
             mainProgressBar.Value++;
             progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum) * 100, 1)}%";
         }
@@ -448,9 +445,6 @@ namespace SBA
             {
                 backupButton.IsEnabled = false;
                 backupOption.IsEnabled = false;
-
-                mainProgressBar.Value++;
-                progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum) * 100, 1)}%";
 
                 DateTimeOffset now = DateTime.Now;
                 string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
