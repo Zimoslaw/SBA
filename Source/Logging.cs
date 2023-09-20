@@ -108,12 +108,12 @@ namespace SBA
 			}
 
             //Insert message into console
-            DockPanel logLine = new DockPanel
+            DockPanel logLine = new DockPanel //Console line UI element
             {
                 Margin = new Thickness(0, 0, 0, 4)
             };
 
-            Label timeLabel = new Label
+            Label timeLabel = new Label //Date and time in console line
             {
                 FontSize = 12,
                 Margin = new Thickness(0, 0, 0, 0),
@@ -123,7 +123,7 @@ namespace SBA
                 Content = date
 			};
 
-			Label logLabel = new Label
+			Label logLabel = new Label //Log message
 			{
 				FontSize = 12,
 				Margin = new Thickness(4, 0, 0, 0),
@@ -133,12 +133,15 @@ namespace SBA
 			};
 
 			if (n < 10)
-				logLabel.Foreground = new SolidColorBrush(Colors.Crimson);
+				logLabel.Foreground = new SolidColorBrush(Colors.Crimson); //When log is error, paint its message red
 
 			logLine.Children.Add(timeLabel);
 			logLine.Children.Add(logLabel);
 
             console?.Children.Insert(console.Children.Count, logLine);
+
+			if (console.Children.Count > 1000) //Delete first log from UI when there are too many
+				console.Children.RemoveAt(0);
 
             //Insert message with date into log file
             msg = "[" + date + "] " + msg + Environment.NewLine;

@@ -63,7 +63,7 @@
         <Label x:Name="filesCount" Grid.Column="1" Grid.Row="5" Content="" FontSize="12" />
         <Label x:Name="filesSize" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="2" Content="" FontSize="12"/>
 		<Label x:Name="elapsedTime" Grid.Column="5" Grid.Row="5" Content="" FontSize="12"/>
-		<ProgressBar x:Name="mainProgressBar" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Maximum="1" Value="-1" IsEnabled="False" Visibility="Hidden"/>
+		<ProgressBar x:Name="mainProgressBar" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Maximum="1" Value="-1" IsEnabled="False" Visibility="Hidden" />
 		<TextBlock x:Name="progress" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="6" Margin="4" Text="0%" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
 
 		<Label Content="Backup directory:" Grid.Column="5" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" />

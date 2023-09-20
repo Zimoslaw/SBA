@@ -39,6 +39,7 @@ namespace SBA
 		private Backup backup = null; //backup operations
 
         long stopwatch; //timestamp for backup time counting
+		private Timer timer;
 
 		public MainWindow()
 		{
@@ -93,10 +94,6 @@ namespace SBA
 				}
 			}
 			addDirButton.IsEnabled = false;
-
-			//--------------------Creating Backup object----------------------------
-			//backup = new Backup(this, appConsole, mainProgressBar, backupButton, backupOption);
-
         }
 
 		/**
@@ -352,8 +349,11 @@ namespace SBA
 
 						DateTimeOffset now = DateTime.Now; //save timestamp for counting elapsed time
 						stopwatch = now.ToUnixTimeSeconds();
+                        //Initializing timer
+                        AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+                        timer = new Timer(UpdateTime, autoResetEvent, 1000, 1000);
 
-						try
+                        try
 						{
 							Thread copyThread = new Thread(
 								new ThreadStart(() =>
@@ -398,6 +398,7 @@ namespace SBA
 		 */
 		public void StopTimeCount(bool wasCanceled)
 		{
+			timer.Dispose();
 			DateTimeOffset now = DateTime.Now;
 			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
             string message = wasCanceled ? $"Backup cancelled at {progress.Text}" : $"Backup done in {time}";
@@ -426,20 +427,35 @@ namespace SBA
             MessageBox.Show(message);
 		}
 
-		/**
-		 * <summary>Updates progress bar and progress text</summary>
+        /**
+		 * <summary>Updates progress bar</summary>
 		 */
-		public void UpdateProgress()
+        public void UpdateProgressBar()
+        {
+            backupButton.IsEnabled = false;
+            backupOption.IsEnabled = false;
+
+            mainProgressBar.Value++;
+            progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum) * 100, 1)}%";
+        }
+
+        /**
+		 * <summary>Updates elapsed time text</summary>
+		 */
+        public void UpdateTime(Object stateInfo)
 		{
-			backupButton.IsEnabled = false;
-			backupOption.IsEnabled = false;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                backupButton.IsEnabled = false;
+                backupOption.IsEnabled = false;
 
-			mainProgressBar.Value++;
-			progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum)*100, 1)}%";
+                mainProgressBar.Value++;
+                progress.Text = $"{Math.Round((mainProgressBar.Value / mainProgressBar.Maximum) * 100, 1)}%";
 
-			DateTimeOffset now = DateTime.Now;
-			string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
-			elapsedTime.Content = $"Elapsed: {time}";
+                DateTimeOffset now = DateTime.Now;
+                string time = SecondsToTime(now.ToUnixTimeSeconds() - stopwatch);
+                elapsedTime.Content = $"Elapsed: {time}";
+            }));
 		}
 
 		/**
@@ -457,7 +473,7 @@ namespace SBA
 				{
 					long minutes = secs % 60;
 					secs /= 60;
-					time = $"{secs} hours {minutes} minutes {seconds} seconds";
+					time = secs == 1? $"{secs} hour {minutes} minutes {seconds} seconds" : $"{secs} hours {minutes} minutes {seconds} seconds";
 				}
 			}
 			return time;

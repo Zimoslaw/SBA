@@ -153,7 +153,7 @@ namespace SBA
 
 					Dispatcher.BeginInvoke(new Action(() =>
 					{
-						mainWindow.UpdateProgress();
+						mainWindow.UpdateProgressBar();
 					}));
 				}
 				else //if path doesn't point to a file, it's consider as directory
